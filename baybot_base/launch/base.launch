@@ -1,7 +1,8 @@
 <launch>
-    <rosparam file="$(find baybot_base)/config/hardware.yaml" command="load"/>
-    <rosparam file="$(find baybot_base)/config/controllers.yaml" command="load"/>
-    <rosparam file="$(find baybot_base)/config/joint_limits.yaml" command="load"/>
+ 
+    <!-- Differential controller parameters -->
+    <include file="$(find baybot_control)/launch/control.launch" />
+
     <node name="baybot_base" pkg="baybot_base" type="baybot_base_node" output="screen"/>
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/"
         args="
