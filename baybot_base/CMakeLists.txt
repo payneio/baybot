@@ -124,10 +124,10 @@ include_directories(
 ## Declare a C++ library
 add_library(
   ${PROJECT_NAME}
-  include/${PROJECT_NAME}/baybot_base.h
+  include/${PROJECT_NAME}/baybot_hardware.h
   include/${PROJECT_NAME}/i2c.h
   include/${PROJECT_NAME}/joint.h
-  src/baybot_base.cpp
+  src/baybot_hardware.cpp
   src/baybot_base_node.cpp
   src/i2c.cpp
   src/joint.cpp
@@ -143,7 +143,7 @@ add_library(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
   src/baybot_base_node.cpp
-  src/baybot_base.cpp
+  src/baybot_hardware.cpp
   src/joint.cpp
   src/i2c.cpp
 )

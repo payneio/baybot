@@ -23,10 +23,10 @@ namespace baybot_base {
 static const double POSITION_STEP_FACTOR = 10;
 static const double VELOCITY_STEP_FACTOR = 10;
 
-class BaybotBase : public hardware_interface::RobotHW {
+class BaybotHardware : public hardware_interface::RobotHW {
 public:
-  BaybotBase(ros::NodeHandle &nh);
-  ~BaybotBase();
+  BaybotHardware(ros::NodeHandle &nh);
+  ~BaybotHardware();
   void init();
   void update(const ros::TimerEvent &e);
   void read();
