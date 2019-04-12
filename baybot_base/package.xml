@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>baybot_base</name>
+  <version>0.0.0</version>
+  <description>The baybot_base package</description>
+
+  <maintainer email="nobody@example.com">payneio</maintainer>
+
+  <license>All Rights Reserved</license>
+
+  <url type="website">https://github.com/payneio/baybot</url>
+
+  <author>payneio</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <exec_depend>roscpp</exec_depend>
+  <test_depend>gtest</test_depend>
+  <test_depend>roscpp</test_depend>
+
+  <export>
+  </export>
+</package>

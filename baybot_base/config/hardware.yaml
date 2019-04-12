@@ -1,0 +1,6 @@
+baybot:
+  hardware_interface:
+     loop_hz: 10 # hz
+     joints:
+       - wheel_left_joint
+       - wheel_right_joint
