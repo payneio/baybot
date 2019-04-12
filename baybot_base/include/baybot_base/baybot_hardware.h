@@ -27,17 +27,15 @@ class BaybotHardware : public hardware_interface::RobotHW {
 public:
   BaybotHardware(ros::NodeHandle &nh);
   ~BaybotHardware();
-  void init();
+  void RegisterControlInterfaces();
   void update(const ros::TimerEvent &e);
   void read();
   void write(ros::Duration elapsed_time);
 
 protected:
   ros::NodeHandle nh_;
-  ros::Timer non_realtime_loop_;
   ros::Duration control_period_;
   ros::Duration elapsed_time_;
-  double loop_hz_;
   boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
   double p_error_, v_error_, e_error_;
 
