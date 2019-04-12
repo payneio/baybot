@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="baybot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find baybot_description)/urdf/xtion.xacro"/>
+
+  <xacro:asus_camera name="xtion" parent="base_link">
+    <origin xyz="0.155 0 0.4" rpy="0 0 0" />
+  </xacro:asus_camera>
+
+  <gazebo reference="wheel_left_link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+  </gazebo>
+
+  <gazebo reference="wheel_right_link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Blue</material>
+    <mu1>0.3</mu1>
+    <mu2>0.3</mu2>
+    <sensor type="contact" name="bumpers">
+      <always_on>1</always_on>
+      <update_rate>50.0</update_rate>
+      <visualize>true</visualize>
+      <contact>
+        <collision>base_footprint_collision_base_link</collision>
+      </contact>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="gazebo_ros_imu_controller" filename="libgazebo_ros_imu.so">
+      <!-- <robotNamespace></robotNamespace> -->
+      <topicName>imu/data</topicName>
+      <serviceName>imu/service</serviceName>
+      <bodyName>base_link</bodyName>
+      <gaussianNoise>0</gaussianNoise>
+      <rpyOffsets>0 0 0</rpyOffsets>
+      <updateRate>30.0</updateRate>
+      <alwaysOn>true</alwaysOn>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <legacyMode>false</legacyMode>
+      <alwaysOn>true</alwaysOn>
+      <publishWheelTF>true</publishWheelTF>
+      <publishTf>1</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <updateRate>100.0</updateRate>
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <wheelSeparation>0.2756</wheelSeparation>
+      <wheelDiameter>0.1</wheelDiameter>
+      <wheelAcceleration>1.0</wheelAcceleration>
+      <torque>20</torque>
+      <commandTopic>/part2_cmr/cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_link</robotBaseFrame>
+    </plugin>
+  </gazebo>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.304 0.251 0.29"/>
+      </geometry>
+      <origin xyz="0 0 .23" rpy="0 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.304 0.251 0.29"/>
+      </geometry>
+      <origin xyz="0 0 0.23" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.03" />
+    </inertial>
+  </link>
+
+  <joint name="caster_back_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_back_link"/>
+    <origin xyz="-0.112 0 0.078" rpy="0 0 0"/>
+  </joint>
+  <link name="caster_back_link">
+    <collision>
+      <geometry>
+        <sphere radius="0.078"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+    <visual>
+      <geometry>
+        <sphere radius="0.078"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.1" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.001023539" ixy="0.0" ixz="0.0" iyy="0.001023539" iyz="0.0" izz="0.001023539" />
+    </inertial>
+  </link>
+
+  <joint name="wheel_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_left_link"/>
+    <origin xyz="0.067 -0.1378 0.05" rpy="-1.57 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="wheel_left_link">
+    <collision>
+      <geometry>
+        <cylinder length="0.027" radius="0.05"/>
+      </geometry>
+      <origin rpy="0.0 0.0 0" xyz="0 0 0.1"/>
+    </collision>
+    <visual name="visual">
+      <geometry>
+        <cylinder length="0.027" radius="0.05"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.4" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+  </link>
+
+  <joint name="wheel_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_right_link"/>
+    <origin xyz="0.067 0.1378 0.05" rpy="-1.57 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="wheel_right_link">
+    <collision>
+      <geometry>
+        <cylinder length="0.027" radius="0.05"/>
+      </geometry>
+      <origin rpy="0.0 0 0" xyz="0 0 0.195"/>
+    </collision>
+    <visual name="visual">
+      <geometry>
+        <cylinder length="0.027" radius="0.05"/>
+      </geometry>
+      <origin rpy="0.0 0 0" xyz="0 0 0"/>
+    </visual>
+    <inertial>
+      <mass value="0.4" />
+      <origin xyz="0 0.0 0.3" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+  </link>
+
+</robot>
+
