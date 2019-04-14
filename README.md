@@ -1,8 +1,14 @@
 # Baybot
 
-# Set up workspace
+## Set up workspace
 
-`pip install catkin-tools`
+Install dependencies:
+
+```bash
+sudo apt-get update
+sudo apt-get install python-catkin-tools
+sudo apt-get install ros-melodic-ros-control ros-melodic-ros-controllers
+```
 
 ```bash
 

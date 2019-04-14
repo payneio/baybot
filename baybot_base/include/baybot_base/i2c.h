@@ -1,5 +1,4 @@
-#ifndef BAYBOT_HAL__I2C_H
-#define BAYBOT_HAL__I2C_H
+#pragma once
 
 #include <inttypes.h>
 
@@ -18,6 +17,8 @@ public:
   uint8_t WriteByte(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
   uint8_t WriteBytes(uint8_t register_number, uint8_t data[4]);
 
+protected:
+
 private:
   int i2caddr_;
   int i2cbus_;
@@ -25,5 +26,3 @@ private:
   int fd_;
 };
 }  // namespace baybot
-
-#endif

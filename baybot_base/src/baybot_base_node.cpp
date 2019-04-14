@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
   nh.param("/baybot/hardware_interface/loop_hz", loop_hz, 0.1);
   ros::Duration update_freq = ros::Duration(1.0 / loop_hz);
 
+  // Initialize hardware and link to controller manager
   baybot_base::BaybotHardware baybot(nh);
   controller_manager::ControllerManager cm(&baybot, nh);
 
