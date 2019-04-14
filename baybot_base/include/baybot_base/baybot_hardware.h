@@ -1,6 +1,6 @@
-#ifndef BAYBOT_HAL__BAYBOT_HAL_H
-#define BAYBOT_HAL__BAYBOT_HAL_H
+#pragma once
 
+#include <memory>
 #include <boost/scoped_ptr.hpp>
 #include <controller_manager/controller_manager.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -39,9 +39,9 @@ protected:
   boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
   double p_error_, v_error_, e_error_;
 
-  // Joints
-  Joint lwheel_;
-  Joint rwheel_;
+  // Wheels
+  std::unique_ptr<Joint> lwheel_;
+  std::unique_ptr<Joint> rwheel_;
 
   // Interfaces
   hardware_interface::JointStateInterface joint_state_interface_;
@@ -65,5 +65,3 @@ protected:
 };
 
 } // namespace baybot_base
-
-#endif

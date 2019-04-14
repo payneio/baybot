@@ -15,6 +15,10 @@ using joint_limits_interface::SoftJointLimits;
 
 namespace baybot_base {
 BaybotHardware::BaybotHardware(ros::NodeHandle &nh) : nh_(nh) {
+
+  lwheel_ = std::make_unique<Joint>("JointBaseWheelL", 9);
+  rwheel_ = std::make_unique<Joint>("JointBaseWheelR", 10);
+
   RegisterControlInterfaces();
 }
 
@@ -35,18 +39,14 @@ void BaybotHardware::RegisterControlInterfaces() {
   joint_velocity_commands_.resize(num_joints);
   joint_effort_commands_.resize(num_joints);
 
-  lwheel_ = Joint(9);
-  lwheel_.name = "JointBaseWheelL";
-
-  rwheel_ = Joint(10);
-  rwheel_.name = "JointBaseWheelR";
-
   int i = 0;
-  for (Joint joint : {lwheel_, rwheel_}) {
+  for (const auto joint : {&lwheel_, &rwheel_}) {
     // Create joint state interface
-    JointStateHandle jointStateHandle(joint.name, &joint_positions_[i],
-                                      &joint_velocities_[i],
-                                      &joint_efforts_[i]);
+    JointStateHandle jointStateHandle(
+      (*joint)->name_,
+      &joint_positions_[i],
+      &joint_velocities_[i],
+      &joint_efforts_[i]);
     joint_state_interface_.registerHandle(jointStateHandle);
 
     // Create velocity-joint interface
@@ -78,13 +78,13 @@ void BaybotHardware::update(const ros::TimerEvent &e) {
 }
 
 void BaybotHardware::read() {
-  joint_positions_[0] = lwheel_.ReadAngle();
-  joint_positions_[1] = rwheel_.ReadAngle();
+  joint_positions_[0] = lwheel_->ReadAngle();
+  joint_positions_[1] = rwheel_->ReadAngle();
 }
 
 void BaybotHardware::write(ros::Duration elapsed_time) {
   // velocity_joint_soft_limits_interface_.enforceLimits(elapsed_time);
-  lwheel_.Actuate(joint_velocity_commands_[0], (uint8_t)elapsed_time.sec);
-  rwheel_.Actuate(joint_velocity_commands_[0], (uint8_t)elapsed_time.sec);
+  lwheel_->Actuate(joint_velocity_commands_[0], (uint8_t)elapsed_time.sec);
+  rwheel_->Actuate(joint_velocity_commands_[0], (uint8_t)elapsed_time.sec);
 }
 }  // namespace baybot_base

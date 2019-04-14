@@ -1,54 +1,35 @@
-#ifndef BAYBOT_HAL__JOINT_H
-#define BAYBOT_HAL__JOINT_H
+#pragma once
 
 #include <sstream>
 
-// We multiple i2c addresses
-#define BASE_SLAVE_ADDRESS 0x70
-#define ARM_RIGHT_SLAVE_ADDRESS 0x71
-#define ARM_LEFT_SLAVE_ADDRESS 0x72
-#define HEAD_SLAVE_ADDRESS 0x73
+#include "baybot_base/i2c.h"
 
-// We can control both motors and servos
-#define ACTUATOR_TYPE_NONE -1
-#define ACTUATOR_TYPE_MOTOR 0
-#define ACTUATOR_TYPE_SERVO 1
+// i2c address
+#define BASE_SLAVE_ADDRESS 0x58
 
-namespace baybot_base
-{
-class Joint
-{
-private:
-  uint8_t motor_id_ = 0;
-  uint8_t actuator_type_ = 0;
-  uint8_t GetSlaveAddress();
-  uint8_t min_servo_value_ = 0;
-  uint8_t max_servo_value_ = 75;
-  double previous_effort_;
-  double FilterAngle(double angle);
-  int angle_reads_ = 0;
-  static const int filter_previous_ = 3;
-  double previous_angles_[filter_previous_];
-  void PrepareI2CWrite(uint8_t result[4], double effort);
-  void PrepareI2CRead(uint8_t result[4]);
-
-public:
-  std::string name;
-  Joint();
-  Joint(uint8_t motorId);
+namespace baybot_base {
+class Joint {
+ public:
+  //Joint();
+  Joint(std::string, uint8_t);
   ~Joint();
+  std::string name_;
   double sensor_resolution_ = 1024;
   double angle_offset_ = 0;
   double read_ratio_ = 1;
-  uint8_t GetMotorId();
-  void SetMotorId(uint8_t motor_id);
-  void SetActuatorType(uint8_t actuator_type);
-  void SetServoLimits(uint8_t min_value, uint8_t max_value);
-  int GetActuatorType();
-  double GetPreviousEffort();
-  void Actuate(double effort, uint8_t duration);
+  double drive_controller_scale_ = 127;
   double ReadAngle();
-};
-}  // namespace baybot
+  void Actuate(double effort, uint8_t duration);
 
-#endif
+ private:
+  uint8_t motor_id_;
+  double previous_velocity_;
+
+  // smoothing
+  double SmoothAngle(double angle);
+  uint8_t angle_read_counter_ = 0;
+  static const uint8_t smooth_previous_ = 3;
+  double previous_angles_[smooth_previous_];
+  
+};
+}  // namespace baybot_base
