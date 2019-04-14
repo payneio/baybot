@@ -127,10 +127,12 @@ add_library(
   include/${PROJECT_NAME}/baybot_hardware.h
   include/${PROJECT_NAME}/i2c.h
   include/${PROJECT_NAME}/joint.h
+  include/${PROJECT_NAME}/md25.h
   src/baybot_hardware.cpp
   src/baybot_base_node.cpp
   src/i2c.cpp
   src/joint.cpp
+  src/md25.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -144,8 +146,9 @@ add_library(
 add_executable(${PROJECT_NAME}_node
   src/baybot_base_node.cpp
   src/baybot_hardware.cpp
-  src/joint.cpp
   src/i2c.cpp
+  src/joint.cpp
+  src/md25.cpp
 )
 
 ## Rename C++ executable without prefix
