@@ -2,7 +2,6 @@
 
 #include "baybot_base/joint.h"
 
-
 #define PI 3.14159265359
 #define TAU 6.28318530718
 
@@ -47,19 +46,20 @@ double Joint::SmoothAngle(const double angle) {
 double Joint::ReadAngle() {
   uint16_t position;
 
-  I2C i2cSlave = I2C(1, BASE_SLAVE_ADDRESS);
-  uint8_t result = i2cSlave.ReadBytes(motor_id_, 4, position);
-  if (result == 1) {
-    double angle = (position / sensor_resolution_ * TAU);
-    angle = SmoothAngle(angle);
-    angle += angle_offset_;
-    if (angle > PI) angle -= TAU;
-    if (angle < -PI) angle += TAU;
-    angle *= read_ratio_;
-    return angle;
-  } else {
-    ROS_ERROR("I2C Read Error during joint position read. Exiting for safety.");
-  }
+  // FIXME: Read from MD25
+  return 0.0;
+
+  // if (result == 1) {
+  //   double angle = (position / sensor_resolution_ * TAU);
+  //   angle = SmoothAngle(angle);
+  //   angle += angle_offset_;
+  //   if (angle > PI) angle -= TAU;
+  //   if (angle < -PI) angle += TAU;
+  //   angle *= read_ratio_;
+  //   return angle;
+  // } else {
+  //   ROS_ERROR("I2C Read Error during joint position read. Exiting for safety.");
+  // }
 }
 
 void Joint::Actuate(double velocity, const uint8_t duration = 15) {
@@ -77,10 +77,7 @@ void Joint::Actuate(double velocity, const uint8_t duration = 15) {
   data[3] = duration;
 
   // write data to i2c
-  I2C i2c = I2C(1, BASE_SLAVE_ADDRESS);
-  uint8_t result = i2c.WriteBytes(0x00, data);
-  // ROS_INFO("Result: [%i]; effort: [%f]; bytes: %i, %i, %i, %i", result,
-  // effort, data[0], data[1], data[2], data[3]);
+  // FIXME: Write to MD25
 
 }
 

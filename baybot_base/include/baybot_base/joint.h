@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "baybot_base/i2c.h"
+#include "baybot_base/md25.h"
 
 // i2c address
 #define BASE_SLAVE_ADDRESS 0x58

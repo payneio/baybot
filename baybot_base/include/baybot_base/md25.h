@@ -5,7 +5,7 @@
 
 #include "baybot_base/i2c.h"
 
-namespace md25 {
+namespace baybot_base {
 
 class MD25 {
  public:
@@ -35,7 +35,7 @@ class MD25 {
   void enableTimeout();
   void disableTimeout();
   void setMode(uint8_t mode);
-  void setAccelerationRate(uinAddresst8_t rate);
+  void setAccelerationRate(uint8_t rate);
 
  private:
   void setMotorSpeed(uint8_t motor, uint8_t speed);

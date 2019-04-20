@@ -1,6 +1,10 @@
 #include "baybot_base/md25.h"
+#include <chrono>
+#include <thread>
 
-namespace md25 {
+ using namespace std::chrono_literals;
+
+namespace baybot_base {
 
 const uint8_t STANDARD = 0;
 const uint8_t NEGATIVE_SPEEDS = 1;
@@ -39,13 +43,13 @@ const uint8_t CHANGE_I2C_ADDRESS_3 = 0xA5;
  *
  * default address is B0 << 1 i.e. 0x58 as a 7 bit address for the wire lib
  */
-MD25::MD25() { MD25(0xB0 >> 1); }
+MD25::MD25() { MD25{0xB0 >> 1}; };
 
-MD25::MD25(uint8_t i2cAddress) {
-  this->i2cAddress = i2cAddress;
+MD25::MD25(uint8_t i2cAddress): i2c_{I2C("/dev/i2c-2", i2cAddress)} {
 
-  I2c.begin();
-  I2c.timeOut(10);  // ms
+  //this->i2c_ = I2C(boost::format("/dev/i2c-%1%" % i2cAddress);
+  //  this->i2c_ { "/dev/i2c-2", 0x58 };
+
 }
 
 MD25::~MD25() {}
@@ -135,16 +139,16 @@ void MD25::changeAddress(uint8_t newAddress) {
   static uint8_t command[] = {cmdReg, 0x0A};
   command[1] = 0x0A;
   sendWireCommand(command, 2);
-  delay(6);
+  std::this_thread::sleep_for(6ms);
   command[1] = 0xAA;
   sendWireCommand(command, 2);
-  delay(6);
+  std::this_thread::sleep_for(6ms);
   command[1] = 0xA5;
   sendWireCommand(command, 2);
-  delay(6);
+  std::this_thread::sleep_for(6ms);
   command[1] = newAddress;
   sendWireCommand(command, 2);
-  delay(6);
+  std::this_thread::sleep_for(6ms);
 }
 
 /*
@@ -159,22 +163,30 @@ void MD25::setMotorSpeed(uint8_t motor, uint8_t speed) {
 }
 
 uint8_t MD25::readRegisterByte(uint8_t reg) {
-  I2c.read(i2cAddress, reg, (uint8_t)1);
-  return I2c.receive();
+  return i2c_.ReadReg8(reg);
 }
 
 int MD25::readEncoderArray(uint8_t reg) {
-  I2c.read(i2cAddress, reg, (uint8_t)4);
+
+    uint8_t buffer[4];
+
+    // Select the register on the device
+    i2c_.Write(&reg, 1);
+
+    // Read the data from the device
+    i2c_.Read(buffer, 4);
+
   int position = 0;
-  position = I2c.receive() << 8 << 8 << 8;
-  position |= I2c.receive() << 8 << 8;
-  position |= I2c.receive() << 8;
-  position |= I2c.receive();
+  position = buffer[0] << 8 << 8 << 8;
+  position |= buffer[1] << 8 << 8;
+  position |= buffer[2] << 8;
+  position |= buffer[3];
   return position;
 }
 
 void MD25::sendWireCommand(uint8_t bytes[], uint8_t num_bytes) {
-  I2c.write(i2cAddress, bytes[0], bytes + 1, num_bytes);
+    i2c_.Write(bytes, num_bytes);
+  //i2c_.write(i2cAddress, bytes[0], bytes + 1, num_bytes);
 }
 
 // Private Fields
