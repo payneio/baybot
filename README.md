@@ -1,5 +1,7 @@
 # Baybot
 
+!!!THIS IS ABSOLUTELY UNDER CONSTRUCTION!!!
+
 ## Set up workspace
 
 Install dependencies:
@@ -39,5 +41,14 @@ catkin build
 # Build
 
 ```bash
+cd src && git submodule update --init && cd ..
 catkin build
+source devel/setup.bash
+```
+
+# Simulation
+
+```bash
+roslaunch baybot_gazebo baybot_empty_world.launch
+BAYBOT_LOGITECH=1 roslaunch baybot_control teleop.launch
 ```
