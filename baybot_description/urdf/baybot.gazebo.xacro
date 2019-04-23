@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rosbots" >
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="baybot" >
+
+<gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>$(arg robot_namespace)</robotNamespace>
+  </plugin>
+</gazebo>
 
 <gazebo reference="wheel_left_link">
   <mu1>1.0</mu1>
@@ -10,6 +16,16 @@
   <maxVel>1.0</maxVel>
 </gazebo>
 
+<transmission name="l_wheel_trans" type="SimpleTransmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="l_wheel_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="wheel_left_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
 <gazebo reference="wheel_right_link">
   <mu1>1.0</mu1>
   <mu2>1.0</mu2>
@@ -18,6 +34,16 @@
   <minDepth>0.001</minDepth>
   <maxVel>1.0</maxVel>
 </gazebo>
+
+<transmission name="r_wheel_trans" type="SimpleTransmission">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="r_wheel_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="wheel_right_joint">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
 
 <gazebo reference="base_link">
   <material>Gazebo/Blue</material>
@@ -77,27 +103,6 @@
       <distortionT2>0.0</distortionT2>
     </plugin>
   </sensor>
-</gazebo>
-  
-<gazebo>
-  <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
-    <legacyMode>false</legacyMode>
-    <alwaysOn>true</alwaysOn>
-    <publishWheelTF>true</publishWheelTF>
-    <publishTf>1</publishTf>
-    <publishWheelJointState>true</publishWheelJointState>
-    <updateRate>100.0</updateRate>
-    <leftJoint>wheel_left_joint</leftJoint>
-    <rightJoint>wheel_right_joint</rightJoint>
-    <wheelSeparation>1.1</wheelSeparation>
-    <wheelDiameter>0.52</wheelDiameter>
-    <wheelAcceleration>1.0</wheelAcceleration>
-    <torque>20</torque>
-    <commandTopic>/part2_cmr/cmd_vel</commandTopic>
-    <odometryTopic>odom</odometryTopic>
-    <odometryFrame>odom</odometryFrame>
-    <robotBaseFrame>base_link</robotBaseFrame>
-  </plugin>
 </gazebo>
 
 </robot>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot_namespace" default="/"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+  <arg name="laser_enabled" default="$(optenv BAYBOT_LMS1XX_ENABLED false)"/>
+  <arg name="kinect_enabled" default="$(optenv BAYBOT_UR5_ENABLED false)"/>
+  <arg name="urdf_extras" default="$(optenv BAYBOT_URDF_EXTRAS)"/>
+
+  <group ns="$(arg robot_namespace)">
+
+    <!-- Run robot control on the gazebo master -->
+    <!-- Note: baybot_description/description.launch is already included in baybot_control/control.launch. -->
+    <include file="$(find baybot_control)/launch/control.launch">
+        <arg name="laser_enabled" value="$(arg laser_enabled)"/>
+        <arg name="kinect_enabled" value="$(arg kinect_enabled)"/>
+        <arg name="urdf_extras" value="$(arg urdf_extras)"/>
+    </include>
+
+    <group if="$(arg kinect_enabled)">
+
+      <!-- Include poincloud_to_laserscan if simulated Kinect is attached -->
+      <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan" output="screen">
+
+          <remap from="cloud_in" to="camera/depth/points"/>
+          <remap from="scan" to="scan"/>
+          <rosparam>
+              target_frame: base_link # Leave empty to output scan in the pointcloud frame
+              tolerance: 1.0
+              min_height: 0.05
+              max_height: 1.0
+
+              angle_min: -0.52 # -30.0*M_PI/180.0
+              angle_max: 0.52 # 30.0*M_PI/180.0
+              angle_increment: 0.005 # M_PI/360.0
+              scan_time: 0.3333
+              range_min: 0.45
+              range_max: 4.0
+              use_inf: true
+
+              # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+              # 0 : Detect number of cores
+              # 1 : Single threaded
+              # 2->inf : Parallelism level
+              concurrency_level: 1
+          </rosparam>
+      </node>
+
+    </group>
+
+    <!-- Spawn robot in gazebo -->
+    <node name="spawn_baybot_model" pkg="gazebo_ros" type="spawn_model"
+        args="-x $(arg x)
+              -y $(arg y)
+              -z $(arg z)
+              -Y $(arg yaw)
+              -unpause
+              -urdf
+              -param robot_description
+              -model $(arg robot_namespace)" />
+
+  </group>
+
+</launch>
