@@ -1,0 +1,8 @@
+# Empty extras configuration with nothing in it.
+# For overriding defaults to add a custom control parameters
+# file in your own customization package and setting BAYBOT_CONFIG_EXTRAS
+# to your customization file in the launch file control.launch.
+# Each parameter will need to be loaded in the correct namespace to
+# be used. For example, for a Baybot with a lower gear ratio.
+# This can be used to change baybot_velocity_controller/wheel_radius_multiplier
+# to account for the change in the gearbox.
