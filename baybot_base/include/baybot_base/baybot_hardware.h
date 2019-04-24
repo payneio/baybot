@@ -28,6 +28,7 @@ static const double VELOCITY_STEP_FACTOR = 10;
 class BaybotHardware : public hardware_interface::RobotHW {
 public:
   BaybotHardware();
+  BaybotHardware(MotorDriver &md);
   void RegisterControlInterfaces();
   void Update(const ros::TimerEvent &e);
   void Read();
@@ -66,7 +67,7 @@ private:
   };
   uint8_t wheel_buffer_pos_[2];
 
-  MD25 md25_;
+  MotorDriver &md25_;
 };
 
 } // namespace baybot_base

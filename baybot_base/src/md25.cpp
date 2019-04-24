@@ -1,6 +1,7 @@
 #include "baybot_base/md25.h"
 #include <chrono>
 #include <thread>
+#include <cstdio>
 
 using namespace std::chrono_literals;
 
@@ -43,17 +44,9 @@ const uint8_t CHANGE_I2C_ADDRESS_3 = 0xA5;
 
 /*
  * Constructors
- *
- * default address is B0 << 1 i.e. 0x58 as a 7 bit address for the wire lib
  */
-MD25::MD25() { MD25{0xB0 >> 1}; };
 
-MD25::MD25(uint8_t i2cAddress): i2c_{I2C("/dev/i2c-2", i2cAddress)} {
-
-  //this->i2c_ = I2C(boost::format("/dev/i2c-%1%" % i2cAddress);
-  //  this->i2c_ { "/dev/i2c-2", 0x58 };
-
-}
+MD25::MD25(SerialProtocol& sp): serial_{sp} {};
 
 // Gets
 int MD25::GetEncoder1() { return ReadEncoderArray(encoderOneReg); }
@@ -160,7 +153,7 @@ void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
 }
 
 uint8_t MD25::ReadRegisterByte(uint8_t reg) {
-  return i2c_.ReadReg8(reg);
+  return serial_.ReadReg8(reg);
 }
 
 int MD25::ReadEncoderArray(uint8_t reg) {
@@ -168,10 +161,10 @@ int MD25::ReadEncoderArray(uint8_t reg) {
     uint8_t buffer[4];
 
     // Select the register on the device
-    i2c_.Write(&reg, 1);
+    serial_.Write(&reg, 1);
 
     // Read the data from the device
-    i2c_.Read(buffer, 4);
+    serial_.Read(buffer, 4);
 
   int position = 0;
   position = buffer[0] << 8 << 8 << 8;
@@ -182,8 +175,12 @@ int MD25::ReadEncoderArray(uint8_t reg) {
 }
 
 void MD25::SendWireCommand(uint8_t bytes[], uint8_t num_bytes) {
-    i2c_.Write(bytes, num_bytes);
-  //i2c_.write(i2cAddress, bytes[0], bytes + 1, num_bytes);
+
+  // DEBUG MODE
+  std::cout << bytes;
+
+  // serial_.Write(bytes, num_bytes);
+  //serial_.write(i2cAddress, bytes[0], bytes + 1, num_bytes);
 }
 
 // Private Fields

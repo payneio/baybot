@@ -10,11 +10,22 @@
 
 namespace baybot_base { // Begin main namespace
 
-class I2C {
+class SerialProtocol {
+	public:
+	virtual void Read( uint8_t *data, uint8_t size ) = 0;
+	virtual uint8_t ReadReg8( uint8_t reg ) = 0;
+	virtual uint16_t ReadReg16( uint8_t reg ) = 0;
+
+	virtual void Write( uint8_t *data, uint8_t size ) = 0;
+	virtual void WriteReg8( uint8_t reg, uint8_t data ) = 0;
+	virtual void WriteReg16( uint8_t reg, uint16_t data ) = 0;
+};
+
+class I2C : public SerialProtocol {
 
 public:
 
-  I2C(){};
+	I2C(){};
 	I2C( const std::string &dev_path, uint8_t addr );
 
 	virtual ~I2C();

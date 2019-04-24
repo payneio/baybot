@@ -9,10 +9,50 @@
 
 namespace baybot_base {
 
-class MD25 {
+// Interface for a motor driver (e.g. MD25)
+class MotorDriver {
+
+  public:
+
+  // Configuration
+  virtual void ChangeAddress(uint8_t newAddress) = 0;
+  virtual void EnableSpeedRegulation() = 0;
+  virtual void DisableSpeedRegulation() = 0;
+  virtual void EnableTimeout() = 0;
+  virtual void DisableTimeout() = 0;
+  virtual uint8_t GetAccelerationRate() = 0;
+  virtual void SetAccelerationRate(uint8_t rate) = 0;
+
+  virtual uint8_t GetMode() = 0;
+  virtual void SetMode(uint8_t mode) = 0;
+
+  // Encoders
+  virtual void ResetEncoders() = 0;
+  virtual int GetEncoder1() = 0;
+  virtual int GetEncoder2() = 0;
+
+  // Status
+  virtual long GetSoftwareVersion() = 0;
+  virtual float GetBatteryVolts() = 0;
+  
+  // Motors
+  virtual uint8_t GetMotor1Current() = 0;
+  virtual uint8_t GetMotor2Current() = 0;
+  virtual uint8_t GetMotor1Speed() = 0;
+  virtual uint8_t GetMotor2Speed() = 0;
+  virtual void SetMotorsSpeed(uint8_t speed) = 0;
+  virtual void SetMotor1Speed(uint8_t speed) = 0;
+  virtual void SetMotor2Speed(uint8_t speed) = 0;
+  virtual void StopMotor1() = 0;
+  virtual void StopMotor2() = 0;
+  virtual void StopMotors() = 0;
+};
+
+// An MD25 motor driver
+class MD25 : public MotorDriver {
  public:
   MD25();
-  MD25(uint8_t i2cAddress);
+  MD25(SerialProtocol &sp);
 
   // Configuration
   void ChangeAddress(uint8_t newAddress);
@@ -46,15 +86,15 @@ class MD25 {
   void StopMotor1();
   void StopMotor2();
   void StopMotors();
-  
-  
+
  private:
+
+  SerialProtocol& serial_;
+
   void SetMotorSpeed(uint8_t motor, uint8_t speed);
   uint8_t ReadRegisterByte(uint8_t reg);
   int ReadEncoderArray(uint8_t reg);
   void SendWireCommand(uint8_t[], uint8_t);
-
-  I2C i2c_;
 
   static uint8_t const cmdReg = 0x10;          // command register
   static uint8_t const speed1Reg = 0x00;       // speed to first motor

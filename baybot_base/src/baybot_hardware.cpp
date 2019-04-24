@@ -18,7 +18,8 @@ const int DRIVE_CONTROLLER_SHIFT = 128;
 
 namespace baybot_base {
 
-BaybotHardware::BaybotHardware() :
+BaybotHardware::BaybotHardware(MotorDriver& motorDriver) : 
+  md25_(motorDriver),
   lwheel_name_("JointBaseWheelL"), lwheel_id_(9),
   rwheel_name_("JointBaseWheelL"), rwheel_id_(10) {
 
@@ -47,9 +48,6 @@ BaybotHardware::BaybotHardware() :
   JointHandle rwheel_vel_handle(rwheel_state, &cmd_[0]);
   velocity_joint_interface_.registerHandle(rwheel_vel_handle);
   registerInterface(&velocity_joint_interface_);
-
-  // Baybot uses the MD25 motor controller. Let's initialize it.
-  md25_ = MD25();
 
 }
 
