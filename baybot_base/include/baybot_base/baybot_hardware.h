@@ -11,7 +11,7 @@
 #include <joint_limits_interface/joint_limits_rosparam.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
 #include <ros/ros.h>
-#include "baybot_base/joint.h"
+#include "baybot_base/md25.h"
 
 using namespace hardware_interface;
 using joint_limits_interface::JointLimits;
@@ -20,30 +20,26 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 using joint_limits_interface::SoftJointLimits;
 
 namespace baybot_base {
+
+static const double NULL_ANGLE = 9000;
 static const double POSITION_STEP_FACTOR = 10;
 static const double VELOCITY_STEP_FACTOR = 10;
 
 class BaybotHardware : public hardware_interface::RobotHW {
 public:
-  BaybotHardware(ros::NodeHandle &nh);
-  ~BaybotHardware();
+  BaybotHardware();
   void RegisterControlInterfaces();
-  void update(const ros::TimerEvent &e);
-  void read();
-  void write(ros::Duration elapsed_time);
+  void Update(const ros::TimerEvent &e);
+  void Read();
+  void Write(ros::Duration elapsed_time);
 
 protected:
-  ros::NodeHandle nh_;
   ros::Duration control_period_;
   ros::Duration elapsed_time_;
   boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
   double p_error_, v_error_, e_error_;
 
-  // Wheels
-  std::unique_ptr<Joint> lwheel_;
-  std::unique_ptr<Joint> rwheel_;
-
-  // Interfaces
+  // ros_control interfaces
   hardware_interface::JointStateInterface joint_state_interface_;
   hardware_interface::VelocityJointInterface velocity_joint_interface_;
   joint_limits_interface::VelocityJointSaturationInterface
@@ -51,17 +47,26 @@ protected:
   joint_limits_interface::VelocityJointSoftLimitsInterface
       velocity_joint_limits_interface_;
 
-  // Shared memory
-  std::vector<double> joint_positions_;
-  std::vector<double> joint_velocities_;
-  std::vector<double> joint_efforts_;
-  std::vector<double> joint_position_commands_;
-  std::vector<double> joint_velocity_commands_;
-  std::vector<double> joint_effort_commands_;
-  std::vector<double> joint_lower_limits_;
-  std::vector<double> joint_upper_limits_;
-  std::vector<double> joint_effort_limits_;
+  // ros_control memory buffers
+  double cmd_[2];
+  double pos_[2];
+  double vel_[2];
+  double eff_[2];
+  
+private:
+  double SmoothAngle(int joint, const double angle);
+  uint8_t VelocityToMD25(double);
+  std::string lwheel_name_;
+  int lwheel_id_;
+  std::string rwheel_name_;
+  int rwheel_id_;
+  double wheel_buffer_[2][3] = { 
+    { NULL_ANGLE,NULL_ANGLE,NULL_ANGLE },
+    { NULL_ANGLE,NULL_ANGLE,NULL_ANGLE }
+  };
+  uint8_t wheel_buffer_pos_[2];
 
+  MD25 md25_;
 };
 
 } // namespace baybot_base

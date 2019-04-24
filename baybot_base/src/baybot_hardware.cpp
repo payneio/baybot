@@ -13,78 +13,112 @@ using joint_limits_interface::PositionJointSoftLimitsHandle;
 using joint_limits_interface::PositionJointSoftLimitsInterface;
 using joint_limits_interface::SoftJointLimits;
 
+const double DRIVE_CONTROLLER_SCALE = 128;
+const int DRIVE_CONTROLLER_SHIFT = 128;
+
 namespace baybot_base {
-BaybotHardware::BaybotHardware(ros::NodeHandle &nh) : nh_(nh) {
 
-  lwheel_ = std::make_unique<Joint>("JointBaseWheelL", 9);
-  rwheel_ = std::make_unique<Joint>("JointBaseWheelR", 10);
+BaybotHardware::BaybotHardware() :
+  lwheel_name_("JointBaseWheelL"), lwheel_id_(9),
+  rwheel_name_("JointBaseWheelL"), rwheel_id_(10) {
 
-  RegisterControlInterfaces();
-}
+  // Give the controller manager (and the controllers inside the
+  // controller manager) access to Baybot's joint states (wheels), and to
+  // the Baybot base commands. When the controller manager runs, the
+  // controllers will read from the pos_, vel_ and eff_ variables, and the
+  // controller will write the desired command into the cmd_ variables. 
 
-BaybotHardware::~BaybotHardware() {}
+  // Registers all joint interfaces. For each joint declared in the
+  // hardware interface, initialize command/state vectors, and initialize
+  // and register every kind of joint handle and interface. Note: this is
+  // likely overkill as each type of joint prob needs only one type of
+  // interface.
 
-// Registers all joint interfaces. For each joint declared in the hardware
-// interface, initialize command/state vectors, and initialize and register
-// every kind of joint handle and interface.
-// Note: this is likely overkill as each type of joint prob needs only one
-// type of interface.
-void BaybotHardware::RegisterControlInterfaces() {
-  // Initialize joint data vector space
-  int num_joints = 2;
-  joint_positions_.resize(num_joints);
-  joint_velocities_.resize(num_joints);
-  joint_efforts_.resize(num_joints);
-  joint_position_commands_.resize(num_joints);
-  joint_velocity_commands_.resize(num_joints);
-  joint_effort_commands_.resize(num_joints);
-
-  int i = 0;
-  for (const auto joint : {&lwheel_, &rwheel_}) {
-    // Create joint state interface
-    JointStateHandle jointStateHandle(
-      (*joint)->name_,
-      &joint_positions_[i],
-      &joint_velocities_[i],
-      &joint_efforts_[i]);
-    joint_state_interface_.registerHandle(jointStateHandle);
-
-    // Create velocity-joint interface
-    JointHandle jointVelocityHandle(jointStateHandle,
-                                    &joint_velocity_commands_[i]);
-    velocity_joint_interface_.registerHandle(jointVelocityHandle);
-
-    // Create velocity-joint soft-limits interface
-    // JointLimits limits;
-    // SoftJointLimits softLimits;
-    // getJointLimits(joint.name, nh_, limits);
-    // VelocityJointSoftLimitsHandle jointLimitsHandle(jointVelocityHandle,
-    // limits, softLimits);
-    // velocity_joint_soft_limits_interface_.registerHandle(jointLimitsHandle);
-
-    i++;
-  }
-
+  // connect ros_control joint state interface
+  JointStateHandle lwheel_state(lwheel_name_, &pos_[0], &vel_[0], &eff_[0]);
+  joint_state_interface_.registerHandle(lwheel_state);
+  JointStateHandle rwheel_state(rwheel_name_, &pos_[1], &vel_[1], &eff_[1]);
+  joint_state_interface_.registerHandle(rwheel_state);
   registerInterface(&joint_state_interface_);
+
+  // connect ros_control velocity_joint_interface
+  JointHandle lwheel_vel_handle(lwheel_state, &cmd_[0]);
+  velocity_joint_interface_.registerHandle(lwheel_vel_handle);
+  JointHandle rwheel_vel_handle(rwheel_state, &cmd_[0]);
+  velocity_joint_interface_.registerHandle(rwheel_vel_handle);
   registerInterface(&velocity_joint_interface_);
-  // registerInterface(&velocity_joint_soft_limits_interface_);
+
+  // Baybot uses the MD25 motor controller. Let's initialize it.
+  md25_ = MD25();
+
 }
 
-void BaybotHardware::update(const ros::TimerEvent &e) {
+// Make sure the pos_, vel_ and eff_ variables always have the latest
+// joint state available, and make sure that whatever is written into the
+// cmd_ variable gets executed by the robot.
+void BaybotHardware::Update(const ros::TimerEvent &e) {
   elapsed_time_ = ros::Duration(e.current_real - e.last_real);
-  read();
+  Read();
   controller_manager_->update(ros::Time::now(), elapsed_time_);
-  write(elapsed_time_);
+  Write(elapsed_time_);
 }
 
-void BaybotHardware::read() {
-  joint_positions_[0] = lwheel_->ReadAngle();
-  joint_positions_[1] = rwheel_->ReadAngle();
+// Populate joint state variables from Baybot
+void BaybotHardware::Read() {
+
+  // if (result == 1) {
+  //   double angle = (position / sensor_resolution_ * TAU);
+  //   angle = SmoothAngle(angle);
+  //   angle += angle_offset_;
+  //   if (angle > PI) angle -= TAU;
+  //   if (angle < -PI) angle += TAU;
+  //   angle *= read_ratio_;
+  //   return angle;
+  // } else {
+  //   ROS_ERROR("I2C Read Error during joint position read. Exiting for safety.");
+  // }
+
+  // pos_[0] = lwheel_->ReadAngle();
+  // pos_[1] = rwheel_->ReadAngle();
 }
 
-void BaybotHardware::write(ros::Duration elapsed_time) {
-  // velocity_joint_soft_limits_interface_.enforceLimits(elapsed_time);
-  lwheel_->Actuate(joint_velocity_commands_[0], (uint8_t)elapsed_time.sec);
-  rwheel_->Actuate(joint_velocity_commands_[0], (uint8_t)elapsed_time.sec);
+// Write whatever is in the cmd_ variable to Baybot
+void BaybotHardware::Write(ros::Duration elapsed_time) {
+
+  // Send commands to wheels
+  md25_.SetMotor1Speed(VelocityToMD25(cmd_[0]));
+  md25_.SetMotor1Speed(VelocityToMD25(cmd_[1]));
 }
+
+uint8_t BaybotHardware::VelocityToMD25(double velocity) {
+  // clamp velocity range
+  if (velocity > 1.0) velocity = 1.0;
+  if (velocity < -1.0) velocity = -1.0;
+  if (abs(velocity * 100) < 20) velocity = 0.0; // negligible
+  return (velocity * DRIVE_CONTROLLER_SCALE) + DRIVE_CONTROLLER_SHIFT;
+}
+
+// SmoothAngle returns an average of the last `filter_previous` readings.
+double BaybotHardware::SmoothAngle(int joint, const double angle) {
+
+  // put value at next position in buffer
+  wheel_buffer_[joint][wheel_buffer_pos_[joint]] = angle;
+  wheel_buffer_pos_[joint]++;
+
+  // Find the average
+  auto sum = 0.0;
+  auto count = 0;
+  for (auto i = 0; i < 3; i++) {
+    if (wheel_buffer_[joint][i] == NULL_ANGLE) continue;
+    sum += wheel_buffer_[joint][i];
+    count++;
+  }
+  auto smooth_result = sum / double(count);
+
+  // ROS_INFO("%f, %f, %f, %i", angle, angle_sum, filterResult,
+  // filter_iterations);
+
+  return smooth_result;
+}
+
 }  // namespace baybot_base

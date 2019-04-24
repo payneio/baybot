@@ -2,9 +2,12 @@
 #include <chrono>
 #include <thread>
 
- using namespace std::chrono_literals;
+using namespace std::chrono_literals;
 
 namespace baybot_base {
+
+#define PI 3.14159265359
+#define TAU 6.28318530718
 
 const uint8_t STANDARD = 0;
 const uint8_t NEGATIVE_SPEEDS = 1;
@@ -52,102 +55,96 @@ MD25::MD25(uint8_t i2cAddress): i2c_{I2C("/dev/i2c-2", i2cAddress)} {
 
 }
 
-MD25::~MD25() {}
-
-/*
- * Public Methods
- */
-
 // Gets
-int MD25::getEncoder1() { return readEncoderArray(encoderOneReg); }
+int MD25::GetEncoder1() { return ReadEncoderArray(encoderOneReg); }
 
-int MD25::getEncoder2() { return readEncoderArray(encoderTwoReg); }
+int MD25::GetEncoder2() { return ReadEncoderArray(encoderTwoReg); }
 
-long MD25::getSoftwareVersion() { return readRegisterByte(softwareVerReg); }
+long MD25::GetSoftwareVersion() { return ReadRegisterByte(softwareVerReg); }
 
-float MD25::getBatteryVolts() { return readRegisterByte(voltReg) / 10.0; }
+float MD25::GetBatteryVolts() { return ReadRegisterByte(voltReg) / 10.0; }
 
-uint8_t MD25::getAccelerationRate() { return readRegisterByte(accRateReg); }
+uint8_t MD25::GetAccelerationRate() { return ReadRegisterByte(accRateReg); }
 
-uint8_t MD25::getMotor1Speed() { return readRegisterByte(speed1Reg); }
+uint8_t MD25::GetMotor1Speed() { return ReadRegisterByte(speed1Reg); }
 
-uint8_t MD25::getMotor2Speed() { return readRegisterByte(speed2Reg); }
+uint8_t MD25::GetMotor2Speed() { return ReadRegisterByte(speed2Reg); }
 
-uint8_t MD25::getMotor1Current() { return readRegisterByte(current1Reg); }
+uint8_t MD25::GetMotor1Current() { return ReadRegisterByte(current1Reg); }
 
-uint8_t MD25::getMotor2Current() { return readRegisterByte(current2Reg); }
+uint8_t MD25::GetMotor2Current() { return ReadRegisterByte(current2Reg); }
 
-uint8_t MD25::getMode() { return readRegisterByte(modeReg); }
+uint8_t MD25::GetMode() { return ReadRegisterByte(modeReg); }
 
 // Sets
-void MD25::resetEncoders() {
+void MD25::ResetEncoders() {
   static uint8_t command[] = {cmdReg, 0x20};
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::enableSpeedRegulation() {
+void MD25::EnableSpeedRegulation() {
   static uint8_t command[] = {cmdReg, 0x31};
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::disableSpeedRegulation() {
+void MD25::DisableSpeedRegulation() {
   static uint8_t command[] = {cmdReg, 0x30};
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::enableTimeout() {
+void MD25::EnableTimeout() {
   static uint8_t command[] = {cmdReg, 0x33};
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::disableTimeout() {
+void MD25::DisableTimeout() {
   static uint8_t command[] = {cmdReg, 0x32};
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::setMotorsSpeed(uint8_t speed) {
-  setMotor1Speed(speed);
-  setMotor2Speed(speed);
+void MD25::SetMotorsSpeed(uint8_t speed) {
+  SetMotor1Speed(speed);
+  SetMotor2Speed(speed);
 }
 
-void MD25::setMotor1Speed(uint8_t speed) { setMotorSpeed(speed1Reg, speed); }
+void MD25::SetMotor1Speed(uint8_t speed) { SetMotorSpeed(speed1Reg, speed); }
 
-void MD25::setMotor2Speed(uint8_t speed) { setMotorSpeed(speed2Reg, speed); }
+void MD25::SetMotor2Speed(uint8_t speed) { SetMotorSpeed(speed2Reg, speed); }
 
-void MD25::stopMotor1() { setMotor1Speed(stopSpeed); }
+void MD25::StopMotor1() { SetMotor1Speed(stopSpeed); }
 
-void MD25::stopMotor2() { setMotor2Speed(stopSpeed); }
+void MD25::StopMotor2() { SetMotor2Speed(stopSpeed); }
 
-void MD25::stopMotors() {
-  stopMotor1();
-  stopMotor2();
+void MD25::StopMotors() {
+  StopMotor1();
+  StopMotor2();
 }
 
-void MD25::setMode(uint8_t mode) {
+void MD25::SetMode(uint8_t mode) {
   static uint8_t command[] = {modeReg, 0x00};
   command[1] = mode;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::setAccelerationRate(uint8_t rate) {
+void MD25::SetAccelerationRate(uint8_t rate) {
   static uint8_t command[] = {accRateReg, 0x05};
   command[1] = rate;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-void MD25::changeAddress(uint8_t newAddress) {
+void MD25::ChangeAddress(uint8_t newAddress) {
   static uint8_t command[] = {cmdReg, 0x0A};
   command[1] = 0x0A;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
   std::this_thread::sleep_for(6ms);
   command[1] = 0xAA;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
   std::this_thread::sleep_for(6ms);
   command[1] = 0xA5;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
   std::this_thread::sleep_for(6ms);
   command[1] = newAddress;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
   std::this_thread::sleep_for(6ms);
 }
 
@@ -155,18 +152,18 @@ void MD25::changeAddress(uint8_t newAddress) {
  * Private Methods
  */
 
-void MD25::setMotorSpeed(uint8_t motor, uint8_t speed) {
+void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
   static uint8_t command[] = {0x00, stopSpeed};
   command[0] = motor;
   command[1] = speed;
-  sendWireCommand(command, 2);
+  SendWireCommand(command, 2);
 }
 
-uint8_t MD25::readRegisterByte(uint8_t reg) {
+uint8_t MD25::ReadRegisterByte(uint8_t reg) {
   return i2c_.ReadReg8(reg);
 }
 
-int MD25::readEncoderArray(uint8_t reg) {
+int MD25::ReadEncoderArray(uint8_t reg) {
 
     uint8_t buffer[4];
 
@@ -184,7 +181,7 @@ int MD25::readEncoderArray(uint8_t reg) {
   return position;
 }
 
-void MD25::sendWireCommand(uint8_t bytes[], uint8_t num_bytes) {
+void MD25::SendWireCommand(uint8_t bytes[], uint8_t num_bytes) {
     i2c_.Write(bytes, num_bytes);
   //i2c_.write(i2cAddress, bytes[0], bytes + 1, num_bytes);
 }

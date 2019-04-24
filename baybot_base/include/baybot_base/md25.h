@@ -5,43 +5,54 @@
 
 #include "baybot_base/i2c.h"
 
+#define BASE_SLAVE_ADDRESS 0x58
+
 namespace baybot_base {
 
 class MD25 {
  public:
   MD25();
   MD25(uint8_t i2cAddress);
-  ~MD25();
-  void resetEncoders();
-  int getEncoder1();
-  int getEncoder2();
-  void setMotorsSpeed(uint8_t speed);
-  void setMotor1Speed(uint8_t speed);
-  void setMotor2Speed(uint8_t speed);
-  void stopMotor1();
-  void stopMotor2();
-  void stopMotors();
-  long getSoftwareVersion();
-  float getBatteryVolts();
-  void changeAddress(uint8_t newAddress);
-  uint8_t getAccelerationRate();
-  uint8_t getMotor1Current();
-  uint8_t getMotor2Current();
-  uint8_t getMotor1Speed();
-  uint8_t getMotor2Speed();
-  uint8_t getMode();
-  void enableSpeedRegulation();
-  void disableSpeedRegulation();
-  void enableTimeout();
-  void disableTimeout();
-  void setMode(uint8_t mode);
-  void setAccelerationRate(uint8_t rate);
 
+  // Configuration
+  void ChangeAddress(uint8_t newAddress);
+  void EnableSpeedRegulation();
+  void DisableSpeedRegulation();
+  void EnableTimeout();
+  void DisableTimeout();
+  uint8_t GetAccelerationRate();
+  void SetAccelerationRate(uint8_t rate);
+
+  uint8_t GetMode();
+  void SetMode(uint8_t mode);
+
+  // Encoders
+  void ResetEncoders();
+  int GetEncoder1();
+  int GetEncoder2();
+
+  // Status
+  long GetSoftwareVersion();
+  float GetBatteryVolts();
+  
+  // Motors
+  uint8_t GetMotor1Current();
+  uint8_t GetMotor2Current();
+  uint8_t GetMotor1Speed();
+  uint8_t GetMotor2Speed();
+  void SetMotorsSpeed(uint8_t speed);
+  void SetMotor1Speed(uint8_t speed);
+  void SetMotor2Speed(uint8_t speed);
+  void StopMotor1();
+  void StopMotor2();
+  void StopMotors();
+  
+  
  private:
-  void setMotorSpeed(uint8_t motor, uint8_t speed);
-  uint8_t readRegisterByte(uint8_t reg);
-  int readEncoderArray(uint8_t reg);
-  void sendWireCommand(uint8_t[], uint8_t);
+  void SetMotorSpeed(uint8_t motor, uint8_t speed);
+  uint8_t ReadRegisterByte(uint8_t reg);
+  int ReadEncoderArray(uint8_t reg);
+  void SendWireCommand(uint8_t[], uint8_t);
 
   I2C i2c_;
 

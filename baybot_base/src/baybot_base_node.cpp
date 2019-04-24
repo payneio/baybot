@@ -14,15 +14,15 @@ int main(int argc, char **argv) {
   ros::Duration update_freq = ros::Duration(1.0 / loop_hz);
 
   // Initialize hardware and link to controller manager
-  baybot_base::BaybotHardware baybot(nh);
-  controller_manager::ControllerManager cm(&baybot, nh);
+  baybot_base::BaybotHardware baybot;
+  controller_manager::ControllerManager cm(&baybot);
 
   ros::AsyncSpinner spinner(1);
 
   // Call BaybotHardware:update at update_freq in a separate thread
   ros::Timer non_realtime_loop = nh.createTimer(
     update_freq,
-    &baybot_base::BaybotHardware::update,
+    &baybot_base::BaybotHardware::Update,
     &baybot
   );
 

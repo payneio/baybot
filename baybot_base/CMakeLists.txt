@@ -126,12 +126,10 @@ add_library(
   ${PROJECT_NAME}
   include/${PROJECT_NAME}/baybot_hardware.h
   include/${PROJECT_NAME}/i2c.h
-  include/${PROJECT_NAME}/joint.h
   include/${PROJECT_NAME}/md25.h
   src/baybot_hardware.cpp
   src/baybot_base_node.cpp
   src/i2c.cpp
-  src/joint.cpp
   src/md25.cpp
 )
 
@@ -147,7 +145,6 @@ add_executable(${PROJECT_NAME}_node
   src/baybot_base_node.cpp
   src/baybot_hardware.cpp
   src/i2c.cpp
-  src/joint.cpp
   src/md25.cpp
 )
 
