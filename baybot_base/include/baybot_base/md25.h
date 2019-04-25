@@ -80,9 +80,9 @@ class MD25 : public MotorDriver {
   uint8_t GetMotor2Current();
   uint8_t GetMotor1Speed();
   uint8_t GetMotor2Speed();
-  void SetMotorsSpeed(uint8_t speed);
-  void SetMotor1Speed(uint8_t speed);
-  void SetMotor2Speed(uint8_t speed);
+  void SetMotorsSpeed(const uint8_t speed);
+  void SetMotor1Speed(const uint8_t speed);
+  void SetMotor2Speed(const uint8_t speed);
   void StopMotor1();
   void StopMotor2();
   void StopMotors();

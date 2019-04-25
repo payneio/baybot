@@ -11,7 +11,7 @@
 namespace baybot_base { // Begin main namespace
 
 class SerialProtocol {
-	public:
+public:
 	virtual void Read( uint8_t *data, uint8_t size ) = 0;
 	virtual uint8_t ReadReg8( uint8_t reg ) = 0;
 	virtual uint16_t ReadReg16( uint8_t reg ) = 0;

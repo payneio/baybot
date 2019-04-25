@@ -21,7 +21,7 @@ namespace baybot_base {
 BaybotHardware::BaybotHardware(MotorDriver& motorDriver) : 
   md25_(motorDriver),
   lwheel_name_("JointBaseWheelL"), lwheel_id_(9),
-  rwheel_name_("JointBaseWheelL"), rwheel_id_(10) {
+  rwheel_name_("JointBaseWheelR"), rwheel_id_(10) {
 
   // Give the controller manager (and the controllers inside the
   // controller manager) access to Baybot's joint states (wheels), and to
@@ -85,15 +85,7 @@ void BaybotHardware::Write(ros::Duration elapsed_time) {
 
   // Send commands to wheels
   md25_.SetMotor1Speed(VelocityToMD25(cmd_[0]));
-  md25_.SetMotor1Speed(VelocityToMD25(cmd_[1]));
-}
-
-uint8_t BaybotHardware::VelocityToMD25(double velocity) {
-  // clamp velocity range
-  if (velocity > 1.0) velocity = 1.0;
-  if (velocity < -1.0) velocity = -1.0;
-  if (abs(velocity * 100) < 20) velocity = 0.0; // negligible
-  return (velocity * DRIVE_CONTROLLER_SCALE) + DRIVE_CONTROLLER_SHIFT;
+  md25_.SetMotor2Speed(VelocityToMD25(cmd_[1]));
 }
 
 // SmoothAngle returns an average of the last `filter_previous` readings.
@@ -117,6 +109,19 @@ double BaybotHardware::SmoothAngle(int joint, const double angle) {
   // filter_iterations);
 
   return smooth_result;
+}
+
+// The MD25 driver considers 0 = full reverse, 128 = stop, 255 = full forward
+// refer: http://www.robot-electronics.co.uk/htm/md25ser.htm
+uint8_t VelocityToMD25(double velocity) {
+  // clamp velocity range
+  if (velocity > 1.0) velocity = 1.0;
+  if (velocity < -1.0) velocity = -1.0;
+  if (abs(velocity * 100) < 20) velocity = 0.0; // negligible
+  
+  velocity = (velocity * DRIVE_CONTROLLER_SCALE) + DRIVE_CONTROLLER_SHIFT;
+  if (velocity > 255) velocity = 255;
+  return velocity;
 }
 
 }  // namespace baybot_base

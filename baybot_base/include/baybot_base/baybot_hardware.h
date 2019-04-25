@@ -34,7 +34,7 @@ public:
   void Read();
   void Write(ros::Duration elapsed_time);
 
-protected:
+public:
   ros::Duration control_period_;
   ros::Duration elapsed_time_;
   boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
@@ -56,7 +56,6 @@ protected:
   
 private:
   double SmoothAngle(int joint, const double angle);
-  uint8_t VelocityToMD25(double);
   std::string lwheel_name_;
   int lwheel_id_;
   std::string rwheel_name_;
@@ -69,5 +68,7 @@ private:
 
   MotorDriver &md25_;
 };
+
+uint8_t VelocityToMD25(double velocity);
 
 } // namespace baybot_base

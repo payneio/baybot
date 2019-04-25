@@ -104,9 +104,9 @@ find_package(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES baybot_base
-#  CATKIN_DEPENDS roscpp
+  INCLUDE_DIRS include
+  LIBRARIES baybot_base
+  CATKIN_DEPENDS roscpp
 #  DEPENDS system_lib
 )
 
@@ -119,6 +119,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -203,9 +204,14 @@ target_link_libraries(${PROJECT_NAME}_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/utest.cpp)
-if(TARGET ${PROJECT_NAME}-test)
-  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gmock(${PROJECT_NAME}-test test/baybot_hardware_test.cpp)
+  target_link_libraries(${PROJECT_NAME}-test
+    ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES})
+  
+  catkin_add_gmock(${PROJECT_NAME}-md25-test test/md25_test.cpp)
+  target_link_libraries(${PROJECT_NAME}-md25-test
+    ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES})
 endif()
 
 ## Add folders to be run by python nosetests

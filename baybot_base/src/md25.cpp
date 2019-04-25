@@ -1,7 +1,6 @@
 #include "baybot_base/md25.h"
 #include <chrono>
 #include <thread>
-#include <cstdio>
 
 using namespace std::chrono_literals;
 
@@ -95,14 +94,18 @@ void MD25::DisableTimeout() {
   SendWireCommand(command, 2);
 }
 
-void MD25::SetMotorsSpeed(uint8_t speed) {
+void MD25::SetMotorsSpeed(const uint8_t speed) {
   SetMotor1Speed(speed);
   SetMotor2Speed(speed);
 }
 
-void MD25::SetMotor1Speed(uint8_t speed) { SetMotorSpeed(speed1Reg, speed); }
+void MD25::SetMotor1Speed(const uint8_t speed) {
+  SetMotorSpeed(speed1Reg, speed); 
+}
 
-void MD25::SetMotor2Speed(uint8_t speed) { SetMotorSpeed(speed2Reg, speed); }
+void MD25::SetMotor2Speed(const uint8_t speed) {
+  SetMotorSpeed(speed2Reg, speed);
+}
 
 void MD25::StopMotor1() { SetMotor1Speed(stopSpeed); }
 
@@ -174,13 +177,8 @@ int MD25::ReadEncoderArray(uint8_t reg) {
   return position;
 }
 
-void MD25::SendWireCommand(uint8_t bytes[], uint8_t num_bytes) {
-
-  // DEBUG MODE
-  std::cout << bytes;
-
-  // serial_.Write(bytes, num_bytes);
-  //serial_.write(i2cAddress, bytes[0], bytes + 1, num_bytes);
+void MD25::SendWireCommand(uint8_t data[], uint8_t num_bytes) {
+  serial_.Write(data, num_bytes);
 }
 
 // Private Fields

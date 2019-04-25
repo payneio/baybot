@@ -17,6 +17,7 @@
   <build_export_depend>roscpp</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <test_depend>gtest</test_depend>
+  <test_depend>gmock</test_depend>
   <test_depend>roscpp</test_depend>
 
   <export>
