@@ -34,7 +34,14 @@ public:
   void Read();
   void Write(ros::Duration elapsed_time);
 
-public:
+  // ros_control memory buffers
+  // TODO: These are only public due to tests. Find a better way.
+  double cmd_[2];
+  double pos_[2];
+  double vel_[2];
+  double eff_[2];
+
+protected:
   ros::Duration control_period_;
   ros::Duration elapsed_time_;
   boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
@@ -47,12 +54,6 @@ public:
       velocity_joint_saturation_interface_;
   joint_limits_interface::VelocityJointSoftLimitsInterface
       velocity_joint_limits_interface_;
-
-  // ros_control memory buffers
-  double cmd_[2];
-  double pos_[2];
-  double vel_[2];
-  double eff_[2];
   
 private:
   double SmoothAngle(int joint, const double angle);
