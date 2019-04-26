@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <boost/scoped_ptr.hpp>
 #include <controller_manager/controller_manager.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
@@ -11,6 +9,8 @@
 #include <joint_limits_interface/joint_limits_rosparam.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
 #include <ros/ros.h>
+#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include "baybot_base/md25.h"
 
 using namespace hardware_interface;
@@ -26,7 +26,7 @@ static const double POSITION_STEP_FACTOR = 10;
 static const double VELOCITY_STEP_FACTOR = 10;
 
 class BaybotHardware : public hardware_interface::RobotHW {
-public:
+ public:
   BaybotHardware();
   BaybotHardware(MotorDriver &md);
   void RegisterControlInterfaces();
@@ -41,7 +41,7 @@ public:
   double vel_[2];
   double eff_[2];
 
-protected:
+ protected:
   ros::Duration control_period_;
   ros::Duration elapsed_time_;
   boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
@@ -54,17 +54,15 @@ protected:
       velocity_joint_saturation_interface_;
   joint_limits_interface::VelocityJointSoftLimitsInterface
       velocity_joint_limits_interface_;
-  
-private:
+
+ private:
   double SmoothAngle(int joint, const double angle);
   std::string lwheel_name_;
   int lwheel_id_;
   std::string rwheel_name_;
   int rwheel_id_;
-  double wheel_buffer_[2][3] = { 
-    { NULL_ANGLE,NULL_ANGLE,NULL_ANGLE },
-    { NULL_ANGLE,NULL_ANGLE,NULL_ANGLE }
-  };
+  double wheel_buffer_[2][3] = {{NULL_ANGLE, NULL_ANGLE, NULL_ANGLE},
+                                {NULL_ANGLE, NULL_ANGLE, NULL_ANGLE}};
   uint8_t wheel_buffer_pos_[2];
 
   MotorDriver &md25_;
@@ -72,4 +70,4 @@ private:
 
 uint8_t VelocityToMD25(double velocity);
 
-} // namespace baybot_base
+}  // namespace baybot_base

@@ -45,7 +45,7 @@ const uint8_t CHANGE_I2C_ADDRESS_3 = 0xA5;
  * Constructors
  */
 
-MD25::MD25(SerialProtocol& sp): serial_{sp} {};
+MD25::MD25(SerialProtocol& sp) : serial_{sp} {};
 
 // Gets
 int MD25::GetEncoder1() { return ReadEncoderArray(encoderOneReg); }
@@ -100,7 +100,7 @@ void MD25::SetMotorsSpeed(const uint8_t speed) {
 }
 
 void MD25::SetMotor1Speed(const uint8_t speed) {
-  SetMotorSpeed(speed1Reg, speed); 
+  SetMotorSpeed(speed1Reg, speed);
 }
 
 void MD25::SetMotor2Speed(const uint8_t speed) {
@@ -155,19 +155,16 @@ void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
   SendWireCommand(command, 2);
 }
 
-uint8_t MD25::ReadRegisterByte(uint8_t reg) {
-  return serial_.ReadReg8(reg);
-}
+uint8_t MD25::ReadRegisterByte(uint8_t reg) { return serial_.ReadReg8(reg); }
 
 int MD25::ReadEncoderArray(uint8_t reg) {
+  uint8_t buffer[4];
 
-    uint8_t buffer[4];
+  // Select the register on the device
+  serial_.Write(&reg, 1);
 
-    // Select the register on the device
-    serial_.Write(&reg, 1);
-
-    // Read the data from the device
-    serial_.Read(buffer, 4);
+  // Read the data from the device
+  serial_.Read(buffer, 4);
 
   int position = 0;
   position = buffer[0] << 8 << 8 << 8;
@@ -195,4 +192,4 @@ void MD25::SendWireCommand(uint8_t data[], uint8_t num_bytes) {
 // motor_2_current = 0
 // software_revision = 0
 
-}  // namespace md25
+}  // namespace baybot_base

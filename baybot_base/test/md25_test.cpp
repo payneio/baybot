@@ -1,7 +1,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "baybot_base/baybot_hardware.h"
+#include "baybot_base/hardware.h"
 
 using ::testing::AtLeast, ::testing::ElementsAreArray, ::testing::Args,
     ::testing::AllArgs, ::testing::_;
@@ -20,12 +20,11 @@ class MockSerialProtocol : public SerialProtocol {
 };
 
 TEST(WriteI2CTest, WriteHandlesDataCorrectly) {
-
   // set up mock
   MockSerialProtocol mockI2C;
   EXPECT_CALL(mockI2C, Write(_, 2))
-  .With(Args<0, 1>(ElementsAreArray({ uint8_t(0), uint8_t(255) })))
-  .Times(1);
+      .With(Args<0, 1>(ElementsAreArray({uint8_t(0), uint8_t(255)})))
+      .Times(1);
 
   // exercise
   MD25 md25(mockI2C);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 #include "baybot_base/i2c.h"
 
@@ -11,9 +11,7 @@ namespace baybot_base {
 
 // Interface for a motor driver (e.g. MD25)
 class MotorDriver {
-
-  public:
-
+ public:
   // Configuration
   virtual void ChangeAddress(uint8_t newAddress) = 0;
   virtual void EnableSpeedRegulation() = 0;
@@ -34,7 +32,7 @@ class MotorDriver {
   // Status
   virtual long GetSoftwareVersion() = 0;
   virtual float GetBatteryVolts() = 0;
-  
+
   // Motors
   virtual uint8_t GetMotor1Current() = 0;
   virtual uint8_t GetMotor2Current() = 0;
@@ -52,7 +50,7 @@ class MotorDriver {
 class MD25 : public MotorDriver {
  public:
   MD25();
-  MD25(SerialProtocol &sp);
+  MD25(SerialProtocol& sp);
 
   // Configuration
   void ChangeAddress(uint8_t newAddress);
@@ -74,7 +72,7 @@ class MD25 : public MotorDriver {
   // Status
   long GetSoftwareVersion();
   float GetBatteryVolts();
-  
+
   // Motors
   uint8_t GetMotor1Current();
   uint8_t GetMotor2Current();
@@ -88,7 +86,6 @@ class MD25 : public MotorDriver {
   void StopMotors();
 
  private:
-
   SerialProtocol& serial_;
 
   void SetMotorSpeed(uint8_t motor, uint8_t speed);
@@ -110,4 +107,4 @@ class MD25 : public MotorDriver {
   static uint8_t const stopSpeed = 0x88;       // 0 velocity
 };
 
-}  // namespace md25
+}  // namespace baybot_base

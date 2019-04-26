@@ -5,29 +5,26 @@
 #include <joint_limits_interface/joint_limits_rosparam.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
 
-#include "baybot_base/baybot_hardware.h"
+#include "baybot_base/hardware.h"
 
 using namespace hardware_interface;
-using joint_limits_interface::JointLimits;
-using joint_limits_interface::PositionJointSoftLimitsHandle;
-using joint_limits_interface::PositionJointSoftLimitsInterface;
-using joint_limits_interface::SoftJointLimits;
 
 const double DRIVE_CONTROLLER_SCALE = 128;
 const int DRIVE_CONTROLLER_SHIFT = 128;
 
 namespace baybot_base {
 
-BaybotHardware::BaybotHardware(MotorDriver& motorDriver) : 
-  md25_(motorDriver),
-  lwheel_name_("JointBaseWheelL"), lwheel_id_(9),
-  rwheel_name_("JointBaseWheelR"), rwheel_id_(10) {
-
+BaybotHardware::BaybotHardware(MotorDriver& motorDriver)
+    : md25_(motorDriver),
+      lwheel_name_("JointBaseWheelL"),
+      lwheel_id_(9),
+      rwheel_name_("JointBaseWheelR"),
+      rwheel_id_(10) {
   // Give the controller manager (and the controllers inside the
   // controller manager) access to Baybot's joint states (wheels), and to
   // the Baybot base commands. When the controller manager runs, the
   // controllers will read from the pos_, vel_ and eff_ variables, and the
-  // controller will write the desired command into the cmd_ variables. 
+  // controller will write the desired command into the cmd_ variables.
 
   // Registers all joint interfaces. For each joint declared in the
   // hardware interface, initialize command/state vectors, and initialize
@@ -48,13 +45,12 @@ BaybotHardware::BaybotHardware(MotorDriver& motorDriver) :
   JointHandle rwheel_vel_handle(rwheel_state, &cmd_[0]);
   velocity_joint_interface_.registerHandle(rwheel_vel_handle);
   registerInterface(&velocity_joint_interface_);
-
 }
 
 // Make sure the pos_, vel_ and eff_ variables always have the latest
 // joint state available, and make sure that whatever is written into the
 // cmd_ variable gets executed by the robot.
-void BaybotHardware::Update(const ros::TimerEvent &e) {
+void BaybotHardware::Update(const ros::TimerEvent& e) {
   elapsed_time_ = ros::Duration(e.current_real - e.last_real);
   Read();
   controller_manager_->update(ros::Time::now(), elapsed_time_);
@@ -63,7 +59,6 @@ void BaybotHardware::Update(const ros::TimerEvent &e) {
 
 // Populate joint state variables from Baybot
 void BaybotHardware::Read() {
-
   // if (result == 1) {
   //   double angle = (position / sensor_resolution_ * TAU);
   //   angle = SmoothAngle(angle);
@@ -73,7 +68,8 @@ void BaybotHardware::Read() {
   //   angle *= read_ratio_;
   //   return angle;
   // } else {
-  //   ROS_ERROR("I2C Read Error during joint position read. Exiting for safety.");
+  //   ROS_ERROR("I2C Read Error during joint position read. Exiting for
+  //   safety.");
   // }
 
   // pos_[0] = lwheel_->ReadAngle();
@@ -82,7 +78,6 @@ void BaybotHardware::Read() {
 
 // Write whatever is in the cmd_ variable to Baybot
 void BaybotHardware::Write(ros::Duration elapsed_time) {
-
   // Send commands to wheels
   md25_.SetMotor1Speed(VelocityToMD25(cmd_[0]));
   md25_.SetMotor2Speed(VelocityToMD25(cmd_[1]));
@@ -90,7 +85,6 @@ void BaybotHardware::Write(ros::Duration elapsed_time) {
 
 // SmoothAngle returns an average of the last `filter_previous` readings.
 double BaybotHardware::SmoothAngle(int joint, const double angle) {
-
   // put value at next position in buffer
   wheel_buffer_[joint][wheel_buffer_pos_[joint]] = angle;
   wheel_buffer_pos_[joint]++;
@@ -117,8 +111,8 @@ uint8_t VelocityToMD25(double velocity) {
   // clamp velocity range
   if (velocity > 1.0) velocity = 1.0;
   if (velocity < -1.0) velocity = -1.0;
-  if (abs(velocity * 100) < 20) velocity = 0.0; // negligible
-  
+  if (abs(velocity * 100) < 20) velocity = 0.0;  // negligible
+
   velocity = (velocity * DRIVE_CONTROLLER_SCALE) + DRIVE_CONTROLLER_SHIFT;
   if (velocity > 255) velocity = 255;
   return velocity;

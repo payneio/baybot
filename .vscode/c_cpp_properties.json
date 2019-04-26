@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/payne/baybot_ws/devel/include",
+                "/opt/ros/melodic/include",
+                "/home/payne/baybot_ws/src/baybot_base/include",
+                "/home/payne/baybot_ws/src/geographic_info/geodesy/include",
+                "/home/payne/baybot_ws/src/robot_localization/include",
+                "/home/payne/baybot_ws/src/teleop_twist_joy/include",
+                "/home/payne/baybot_ws/src/twist_mux/include",
+                "/home/payne/baybot_ws/src/unique_identifier/unique_id/include",
+                "/home/payne/baybot_ws/src/joystick_drivers/wiimote/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc"
+        }
+    ],
+    "version": 4
+}

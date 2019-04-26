@@ -125,11 +125,11 @@ include_directories(
 ## Declare a C++ library
 add_library(
   ${PROJECT_NAME}
-  include/${PROJECT_NAME}/baybot_hardware.h
+  include/${PROJECT_NAME}/hardware.h
   include/${PROJECT_NAME}/i2c.h
   include/${PROJECT_NAME}/md25.h
-  src/baybot_hardware.cpp
-  src/baybot_base_node.cpp
+  src/hardware.cpp
+  src/node.cpp
   src/i2c.cpp
   src/md25.cpp
 )
@@ -143,8 +143,8 @@ add_library(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(${PROJECT_NAME}_node
-  src/baybot_base_node.cpp
-  src/baybot_hardware.cpp
+  src/node.cpp
+  src/hardware.cpp
   src/i2c.cpp
   src/md25.cpp
 )
@@ -205,7 +205,7 @@ target_link_libraries(${PROJECT_NAME}_node
 
 ## Add gtest based cpp test target and link libraries
 if(CATKIN_ENABLE_TESTING)
-  catkin_add_gmock(${PROJECT_NAME}-test test/baybot_hardware_test.cpp)
+  catkin_add_gmock(${PROJECT_NAME}-test test/hardware_test.cpp)
   target_link_libraries(${PROJECT_NAME}-test
     ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES})
   

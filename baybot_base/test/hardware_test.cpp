@@ -1,14 +1,13 @@
-#include "baybot_base/baybot_hardware.h"
+#include "baybot_base/hardware.h"
+#include <ros/ros.h>
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include <ros/ros.h>
 using ::testing::AtLeast;
 
 namespace baybot_base {
 
 class MockMD25 : public MotorDriver {
  public:
-
   // Configuration
   MOCK_METHOD1(ChangeAddress, void(uint8_t newAddress));
   MOCK_METHOD0(EnableSpeedRegulation, void());
@@ -29,7 +28,7 @@ class MockMD25 : public MotorDriver {
   // Status
   MOCK_METHOD0(GetSoftwareVersion, long());
   MOCK_METHOD0(GetBatteryVolts, float());
-  
+
   // Motors
   MOCK_METHOD0(GetMotor1Current, uint8_t());
   MOCK_METHOD0(GetMotor2Current, uint8_t());
@@ -51,23 +50,20 @@ TEST(Velocity, VelocitySetRight) {
   ASSERT_EQ(VelocityToMD25(2.0), 255);
 }
 
-
 TEST(WriteTest, WriteCallsMD25) {
   MockMD25 mockMD25;
-  EXPECT_CALL(mockMD25, SetMotor1Speed(255))
-      .Times(AtLeast(1));
-  EXPECT_CALL(mockMD25, SetMotor2Speed(128))
-      .Times(AtLeast(1));
+  EXPECT_CALL(mockMD25, SetMotor1Speed(255)).Times(AtLeast(1));
+  EXPECT_CALL(mockMD25, SetMotor2Speed(128)).Times(AtLeast(1));
 
-    baybot_base::BaybotHardware baybot(mockMD25);
+  baybot_base::BaybotHardware baybot(mockMD25);
 
-    // cmd_[0] is a command for motor 1. Motor 2, with no command, will be
-    // stopped.
-    baybot.cmd_[0] = 1.0;
-    baybot.Write(ros::Duration(0,100));
+  // cmd_[0] is a command for motor 1. Motor 2, with no command, will be
+  // stopped.
+  baybot.cmd_[0] = 1.0;
+  baybot.Write(ros::Duration(0, 100));
 };
 
-} // namespace baybot_base
+}  // namespace baybot_base
 
 int main(int argc, char** argv) {
   // Initialize Google Mock (and Google Test)
