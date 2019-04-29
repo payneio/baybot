@@ -45,7 +45,9 @@ const uint8_t CHANGE_I2C_ADDRESS_3 = 0xA5;
  * Constructors
  */
 
-MD25::MD25(SerialProtocol& sp) : serial_{sp} {};
+MD25::MD25(SerialProtocol& sp) : serial_{sp} {
+  ROS_INFO("Initialized MD25.");
+};
 
 // Gets
 int MD25::GetEncoder1() { return ReadEncoderArray(encoderOneReg); }
@@ -95,6 +97,7 @@ void MD25::DisableTimeout() {
 }
 
 void MD25::SetMotorsSpeed(const uint8_t speed) {
+  ROS_INFO("setting motors speed");
   SetMotor1Speed(speed);
   SetMotor2Speed(speed);
 }
@@ -149,6 +152,7 @@ void MD25::ChangeAddress(uint8_t newAddress) {
  */
 
 void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
+  ROS_INFO("Setting motor speed to %d", unsigned(speed));
   static uint8_t command[] = {0x00, stopSpeed};
   command[0] = motor;
   command[1] = speed;

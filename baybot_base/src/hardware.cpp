@@ -16,9 +16,9 @@ namespace baybot_base {
 
 BaybotHardware::BaybotHardware(MotorDriver& motorDriver)
     : md25_(motorDriver),
-      lwheel_name_("JointBaseWheelL"),
+      lwheel_name_("l_wheel_joint"),
       lwheel_id_(9),
-      rwheel_name_("JointBaseWheelR"),
+      rwheel_name_("wheel_right_joint"),
       rwheel_id_(10) {
   // Give the controller manager (and the controllers inside the
   // controller manager) access to Baybot's joint states (wheels), and to

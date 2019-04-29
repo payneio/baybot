@@ -21,7 +21,7 @@
   <actuator name="l_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
-  <joint name="wheel_left_joint">
+  <joint name="l_wheel_joint">
     <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
   </joint>
 </transmission>

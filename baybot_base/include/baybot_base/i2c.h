@@ -37,17 +37,13 @@ class I2C : public SerialProtocol {
   void WriteReg16(uint8_t reg, uint16_t data);
 
  private:
-  // device path.
-  std::string m_dev_path;
-
-  // slave address.
-  uint8_t m_addr;
-
-  // device file descriptor
-  int m_dev_fd;
-
-  // data buffer
-  uint8_t m_buffer[3];
+  std::string dev_path_;  // device path.
+  bool debug_;            // debug mode
+  uint8_t dev_addr_;      // slave address.
+  int dev_fd_;            // device file descriptor
+  uint8_t buffer_[3];     // data buffer
 };
+
+const char* DataStr(uint8_t data[], uint8_t size);
 
 }  // namespace baybot_base
