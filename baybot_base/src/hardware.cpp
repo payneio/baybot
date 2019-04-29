@@ -51,6 +51,7 @@ BaybotHardware::BaybotHardware(MotorDriver& motorDriver)
 // joint state available, and make sure that whatever is written into the
 // cmd_ variable gets executed by the robot.
 void BaybotHardware::Update(const ros::TimerEvent& e) {
+  ROS_INFO("Updated at %f", e.current_real.toSec());
   elapsed_time_ = ros::Duration(e.current_real - e.last_real);
   Read();
   controller_manager_->update(ros::Time::now(), elapsed_time_);
@@ -79,6 +80,7 @@ void BaybotHardware::Read() {
 // Write whatever is in the cmd_ variable to Baybot
 void BaybotHardware::Write(ros::Duration elapsed_time) {
   // Send commands to wheels
+  ROS_INFO("writing");
   md25_.SetMotor1Speed(VelocityToMD25(cmd_[0]));
   md25_.SetMotor2Speed(VelocityToMD25(cmd_[1]));
 }
