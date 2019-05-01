@@ -31,3 +31,9 @@
 [submodule "urdf_geometry_parser"]
 	path = urdf_geometry_parser
 	url = git@github.com:ros-controls/urdf_geometry_parser.git
+[submodule "interactive_markers"]
+	path = interactive_markers
+	url = git@github.com:ros-visualization/interactive_markers.git
+[submodule "diagnostics"]
+	path = diagnostics
+	url = git@github.com:ros/diagnostics.git
