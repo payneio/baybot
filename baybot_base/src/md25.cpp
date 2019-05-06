@@ -14,6 +14,8 @@ const uint8_t NEGATIVE_SPEEDS = 1;
 const uint8_t SPEED_AND_TURN = 2;
 const uint8_t NEGATIVE_SPEEDS_AND_TURN = 3;
 
+const uint8_t STOP_SPEED = 0x88; // 0 velocity
+
 // MD25 Registers
 const uint8_t SPEED_1 = 0;
 const uint8_t SPEED_2 = 1;
@@ -50,49 +52,49 @@ MD25::MD25(SerialProtocol& sp) : serial_{sp} {
 };
 
 // Gets
-int MD25::GetEncoder1() { return ReadEncoderArray(encoderOneReg); }
+int MD25::GetEncoder1() { return ReadEncoderArray(ENC_1A); }
 
-int MD25::GetEncoder2() { return ReadEncoderArray(encoderTwoReg); }
+int MD25::GetEncoder2() { return ReadEncoderArray(ENC_2A); }
 
-long MD25::GetSoftwareVersion() { return ReadRegisterByte(softwareVerReg); }
+long MD25::GetSoftwareVersion() { return ReadRegisterByte(SOFTWARE_VERSION); }
 
-float MD25::GetBatteryVolts() { return ReadRegisterByte(voltReg) / 10.0; }
+float MD25::GetBatteryVolts() { return ReadRegisterByte(BATTERY_VOLTAGE) / 10.0; }
 
-uint8_t MD25::GetAccelerationRate() { return ReadRegisterByte(accRateReg); }
+uint8_t MD25::GetAccelerationRate() { return ReadRegisterByte(ACCELERATION); }
 
-uint8_t MD25::GetMotor1Speed() { return ReadRegisterByte(speed1Reg); }
+uint8_t MD25::GetMotor1Speed() { return ReadRegisterByte(SPEED_1); }
 
-uint8_t MD25::GetMotor2Speed() { return ReadRegisterByte(speed2Reg); }
+uint8_t MD25::GetMotor2Speed() { return ReadRegisterByte(SPEED_2); }
 
-uint8_t MD25::GetMotor1Current() { return ReadRegisterByte(current1Reg); }
+uint8_t MD25::GetMotor1Current() { return ReadRegisterByte(MOTOR_1_CURRENT); }
 
-uint8_t MD25::GetMotor2Current() { return ReadRegisterByte(current2Reg); }
+uint8_t MD25::GetMotor2Current() { return ReadRegisterByte(MOTOR_2_CURRENT); }
 
-uint8_t MD25::GetMode() { return ReadRegisterByte(modeReg); }
+uint8_t MD25::GetMode() { return ReadRegisterByte(MODE); }
 
 // Sets
 void MD25::ResetEncoders() {
-  static uint8_t command[] = {cmdReg, 0x20};
+  static uint8_t command[] = {COMMAND, 0x20};
   SendWireCommand(command, 2);
 }
 
 void MD25::EnableSpeedRegulation() {
-  static uint8_t command[] = {cmdReg, 0x31};
+  static uint8_t command[] = {COMMAND, 0x31};
   SendWireCommand(command, 2);
 }
 
 void MD25::DisableSpeedRegulation() {
-  static uint8_t command[] = {cmdReg, 0x30};
+  static uint8_t command[] = {COMMAND, 0x30};
   SendWireCommand(command, 2);
 }
 
 void MD25::EnableTimeout() {
-  static uint8_t command[] = {cmdReg, 0x33};
+  static uint8_t command[] = {COMMAND, 0x33};
   SendWireCommand(command, 2);
 }
 
 void MD25::DisableTimeout() {
-  static uint8_t command[] = {cmdReg, 0x32};
+  static uint8_t command[] = {COMMAND, 0x32};
   SendWireCommand(command, 2);
 }
 
@@ -103,16 +105,16 @@ void MD25::SetMotorsSpeed(const uint8_t speed) {
 }
 
 void MD25::SetMotor1Speed(const uint8_t speed) {
-  SetMotorSpeed(speed1Reg, speed);
+  SetMotorSpeed(SPEED_1, speed);
 }
 
 void MD25::SetMotor2Speed(const uint8_t speed) {
-  SetMotorSpeed(speed2Reg, speed);
+  SetMotorSpeed(SPEED_2, speed);
 }
 
-void MD25::StopMotor1() { SetMotor1Speed(stopSpeed); }
+void MD25::StopMotor1() { SetMotor1Speed(STOP_SPEED); }
 
-void MD25::StopMotor2() { SetMotor2Speed(stopSpeed); }
+void MD25::StopMotor2() { SetMotor2Speed(STOP_SPEED); }
 
 void MD25::StopMotors() {
   StopMotor1();
@@ -120,19 +122,19 @@ void MD25::StopMotors() {
 }
 
 void MD25::SetMode(uint8_t mode) {
-  static uint8_t command[] = {modeReg, 0x00};
+  static uint8_t command[] = {COMMAND, 0x00};
   command[1] = mode;
   SendWireCommand(command, 2);
 }
 
 void MD25::SetAccelerationRate(uint8_t rate) {
-  static uint8_t command[] = {accRateReg, 0x05};
+  static uint8_t command[] = {ACCELERATION, 0x05};
   command[1] = rate;
   SendWireCommand(command, 2);
 }
 
 void MD25::ChangeAddress(uint8_t newAddress) {
-  static uint8_t command[] = {cmdReg, 0x0A};
+  static uint8_t command[] = {COMMAND, 0x0A};
   command[1] = 0x0A;
   SendWireCommand(command, 2);
   std::this_thread::sleep_for(6ms);
@@ -153,7 +155,7 @@ void MD25::ChangeAddress(uint8_t newAddress) {
 
 void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
   ROS_INFO("Setting motor (%d) speed to %d", unsigned(motor), unsigned(speed));
-  static uint8_t command[] = {0x00, stopSpeed};
+  static uint8_t command[] = {0x00, STOP_SPEED};
   command[0] = motor;
   command[1] = speed;
   SendWireCommand(command, 2);

@@ -93,18 +93,6 @@ class MD25 : public MotorDriver {
   int ReadEncoderArray(uint8_t reg);
   void SendWireCommand(uint8_t[], uint8_t);
 
-  static uint8_t const cmdReg = 0x10;          // command register
-  static uint8_t const speed1Reg = 0x00;       // speed to first motor
-  static uint8_t const speed2Reg = 0x01;       // speed to second motor
-  static uint8_t const encoderOneReg = 0x02;   // motor encoder 1 (first byte)
-  static uint8_t const encoderTwoReg = 0x06;   // motor encoder 2 (first byte)
-  static uint8_t const voltReg = 0x0A;         // battery volts
-  static uint8_t const current1Reg = 0x0B;     // motor 1 current
-  static uint8_t const current2Reg = 0x0C;     // motor 2 current
-  static uint8_t const softwareVerReg = 0x0D;  // software version
-  static uint8_t const accRateReg = 0x0E;      // acceleration rate
-  static uint8_t const modeReg = 0x0F;         // mode of operation
-  static uint8_t const stopSpeed = 0x88;       // 0 velocity
 };
 
 }  // namespace baybot_base
