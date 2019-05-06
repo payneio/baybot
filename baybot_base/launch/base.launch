@@ -2,7 +2,7 @@
     <arg name="i2c_path"/>
     <arg name="i2c_channel" default="/dev/i2c-2"/>
 
-    <node name="baybot_base" pkg="baybot_base" type="baybot_base_node" output="screen" launch-prefix="gdb -ex run --args">
+    <node name="baybot_base" pkg="baybot_base" type="baybot_base_node" output="screen" >
         <rosparam subst_value="true">
             i2c/path: $(arg i2c_path)
             i2c/channel: $(arg i2c_channel)
@@ -12,8 +12,5 @@
 
     <!-- Differential controller parameters -->
     <include file="$(find baybot_control)/launch/control.launch" />
-
-    <!--Teleop -->
-    <include file="$(find baybot_control)/launch/teleop.launch" />
 
 </launch>
