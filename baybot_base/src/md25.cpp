@@ -152,7 +152,7 @@ void MD25::ChangeAddress(uint8_t newAddress) {
  */
 
 void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
-  ROS_INFO("Setting motor speed to %d", unsigned(speed));
+  ROS_INFO("Setting motor (%d) speed to %d", unsigned(motor), unsigned(speed));
   static uint8_t command[] = {0x00, stopSpeed};
   command[0] = motor;
   command[1] = speed;
