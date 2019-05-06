@@ -37,3 +37,24 @@
 [submodule "diagnostics"]
 	path = diagnostics
 	url = git@github.com:ros/diagnostics.git
+[submodule "roslint"]
+	path = roslint
+	url = git@github.com:ros/roslint.git
+[submodule "resource_retriever"]
+	path = resource_retriever
+	url = git@github.com:ros/resource_retriever.git
+[submodule "geometry"]
+	path = geometry
+	url = git@github.com:ros/geometry.git
+[submodule "orocos_kinematics_dynamics"]
+	path = orocos_kinematics_dynamics
+	url = git@github.com:orocos/orocos_kinematics_dynamics.git
+[submodule "geometry2"]
+	path = geometry2
+	url = git@github.com:ros/geometry2.git
+[submodule "image_common"]
+	path = image_common
+	url = git@github.com:ros-perception/image_common.git
+[submodule "vision_opencv"]
+	path = vision_opencv
+	url = git@github.com:ros-perception/vision_opencv.git
