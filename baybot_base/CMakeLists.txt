@@ -164,6 +164,16 @@ target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
 )
 
+add_executable(${PROJECT_NAME}_verify
+  src/verify.cpp
+  src/hardware.cpp
+  src/i2c.cpp
+  src/md25.cpp
+)
+target_link_libraries(${PROJECT_NAME}_verify
+   ${catkin_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
