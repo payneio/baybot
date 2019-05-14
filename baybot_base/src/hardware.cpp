@@ -42,7 +42,7 @@ BaybotHardware::BaybotHardware(MotorDriver& motorDriver)
   // connect ros_control velocity_joint_interface
   JointHandle lwheel_vel_handle(lwheel_state, &cmd_[0]);
   velocity_joint_interface_.registerHandle(lwheel_vel_handle);
-  JointHandle rwheel_vel_handle(rwheel_state, &cmd_[0]);
+  JointHandle rwheel_vel_handle(rwheel_state, &cmd_[1]);
   velocity_joint_interface_.registerHandle(rwheel_vel_handle);
   registerInterface(&velocity_joint_interface_);
 }
