@@ -5,7 +5,7 @@ baybot_joint_publisher:
 baybot_velocity_controller:
   type: diff_drive_controller/DiffDriveController
   left_wheel: l_wheel_joint
-  right_wheel: wheel_right_joint
+  right_wheel: r_wheel_joint
   publish_rate: 50.0
   pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
   twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]

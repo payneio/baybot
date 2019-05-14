@@ -40,7 +40,7 @@
   <actuator name="r_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
-  <joint name="wheel_right_joint">
+  <joint name="r_wheel_joint">
     <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
   </joint>
 </transmission>
