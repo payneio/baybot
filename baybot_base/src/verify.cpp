@@ -37,14 +37,22 @@ int main(int argc, char **argv) {
     switch (key) {
       case 'x':
         goto exit_loop;
+      case 'w':
+        std::cout << "A";
+        md25.SetMotor1Speed(255);
+        md25.SetMotor2Speed(255);
       case 'a':
         std::cout << "A";
-        md25.SetMotor1Speed(148);
-        md25.SetMotor2Speed(108);
+        md25.SetMotor1Speed(255);
+        md25.SetMotor2Speed(0);
       case 'd':
         std::cout << "D";
-        md25.SetMotor1Speed(148);
-        md25.SetMotor2Speed(108);
+        md25.SetMotor1Speed(0);
+        md25.SetMotor2Speed(255);
+      case 's':
+        std::cout << "A";
+        md25.SetMotor1Speed(0);
+        md25.SetMotor2Speed(0);
     }
     std::this_thread::sleep_for(std::chrono::seconds(1));
     md25.StopMotors();

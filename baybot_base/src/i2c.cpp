@@ -9,6 +9,7 @@ I2C::I2C(const std::string &path, uint8_t addr)
     debug_ = true;
     return;
   }
+  debug_ = false;
 
   ROS_INFO("Starting I2C %s:%d", path.c_str(), unsigned(addr));
 
@@ -73,7 +74,7 @@ uint16_t I2C::ReadReg16(uint8_t reg) {
 
 const char* DataStr(uint8_t data[], uint8_t size){
   std::stringstream buffer;
-  buffer << std::dec << data;
+  buffer << std::hex << data;
   return buffer.str().c_str();
 }
 
