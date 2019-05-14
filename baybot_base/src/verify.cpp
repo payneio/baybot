@@ -38,23 +38,27 @@ int main(int argc, char **argv) {
       case 'x':
         goto exit_loop;
       case 'w':
-        std::cout << "A";
+        std::cout << "W";
         md25.SetMotor1Speed(255);
         md25.SetMotor2Speed(255);
+	break;
       case 'a':
         std::cout << "A";
-        md25.SetMotor1Speed(255);
-        md25.SetMotor2Speed(0);
-      case 'd':
-        std::cout << "D";
         md25.SetMotor1Speed(0);
         md25.SetMotor2Speed(255);
+	break;
+      case 'd':
+        std::cout << "D";
+        md25.SetMotor1Speed(255);
+        md25.SetMotor2Speed(0);
+	break;
       case 's':
-        std::cout << "A";
+        std::cout << "S";
         md25.SetMotor1Speed(0);
         md25.SetMotor2Speed(0);
+	break;
     }
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
     md25.StopMotors();
   }
   exit_loop: ;

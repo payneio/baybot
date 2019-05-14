@@ -10,7 +10,5 @@
         </rosparam>
     </node>
 
-    <!-- Differential controller parameters -->
-    <include file="$(find baybot_control)/launch/control.launch" />
 
 </launch>

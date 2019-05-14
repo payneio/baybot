@@ -27,11 +27,12 @@ I2C::~I2C() { close(dev_fd_); }
 
 void I2C::Write(uint8_t data[], uint8_t size) {
   if (debug_) {
-    ROS_INFO("write [%d]: %s", size, DataStr(data, size));
+    ROS_INFO("writey [%d]: %s", size, DataStr(data, size));
     return;
   }
   if (::write(dev_fd_, data, size) != size)
     ROS_ERROR("failed to write to the bus");
+  ROS_INFO("wrote %d bytes to %d", size, dev_fd_);
 }
 
 void I2C::Read(uint8_t data[], uint8_t size) {
@@ -74,7 +75,10 @@ uint16_t I2C::ReadReg16(uint8_t reg) {
 
 const char* DataStr(uint8_t data[], uint8_t size){
   std::stringstream buffer;
-  buffer << std::hex << data;
+  for (int i=0; i<size; i++){
+	  buffer << std::hex << +data[i] << std::endl;
+	  std::cout << std::hex << +data[i] << std::endl;
+  }
   return buffer.str().c_str();
 }
 
