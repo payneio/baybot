@@ -113,7 +113,7 @@ uint8_t VelocityToMD25(double velocity) {
   // clamp velocity range
   if (velocity > 1.0) velocity = 1.0;
   if (velocity < -1.0) velocity = -1.0;
-  if (abs(velocity * 100) < 20) velocity = 0.0;  // negligible
+  if (abs(velocity * 100) < 5) velocity = 0.0;  // negligible
 
   velocity = (velocity * DRIVE_CONTROLLER_SCALE) + DRIVE_CONTROLLER_SHIFT;
   if (velocity > 255) velocity = 255;
