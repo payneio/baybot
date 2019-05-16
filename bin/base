@@ -1,0 +1,3 @@
+#!/bin/bash
+
+roslaunch baybot_base base.launch i2c_channel:=88 i2c_path:="/dev/i2c-1"

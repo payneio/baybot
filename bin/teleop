@@ -1,0 +1,3 @@
+#!/bin/bash
+
+BAYBOT_LOGITECH=1 roslaunch baybot_control teleop.launch
