@@ -154,7 +154,7 @@ void MD25::ChangeAddress(uint8_t newAddress) {
  */
 
 void MD25::SetMotorSpeed(uint8_t motor, uint8_t speed) {
-  ROS_INFO("Setting motor (%d) speed to %d", unsigned(motor), unsigned(speed));
+  // ROS_INFO("Setting motor (%d) speed to %d", unsigned(motor), unsigned(speed));
   static uint8_t command[] = {0x00, STOP_SPEED};
   command[0] = motor;
   command[1] = speed;
@@ -183,19 +183,5 @@ int MD25::ReadEncoderArray(uint8_t reg) {
 void MD25::SendWireCommand(uint8_t data[], uint8_t num_bytes) {
   serial_.Write(data, num_bytes);
 }
-
-// Private Fields
-// enc_1a = 0
-// enc_1b = 0
-// enc_1c = 0
-// enc_1d = 0
-// enc_2a = 0
-// enc_2b = 0
-// enc_2c = 0
-// enc_2d = 0
-// battery_voltage = 0
-// motor_1_current = 0
-// motor_2_current = 0
-// software_revision = 0
 
 }  // namespace baybot_base
