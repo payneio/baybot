@@ -1,5 +1,5 @@
 #!/bin/bash
 
-rosrun rviz rviz -d -d $(find rplidar_ros)/rviz/rplidar.rviz
+rosrun rviz rviz -d $(find rplidar_ros)/rviz/rplidar.rviz
 
 # roslaunch rplidar_ros view_rplidar.launch
