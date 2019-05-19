@@ -26,6 +26,8 @@ int main(int argc, char **argv)
   nh.param("/baybot_base/i2c/path", i2c_path, std::string("/dev/i2c-1"));
   int i2c_channel;
   nh.param("/baybot_base/i2c/imu_channel", i2c_channel, 0x68);
+  int mag_channel;
+  nh.param("/baybot_base/i2c/mag_channel", mag_channel, 0x0c);
   double imu_hz;
   nh.param("/baybot_base/imu_hz", imu_hz, 10.0);
 
@@ -37,9 +39,10 @@ int main(int argc, char **argv)
   // Baybot uses the MPU9250 IMU. Let's initialize it.
 
   baybot_base::I2C i2c(i2c_path, i2c_channel);
-
   baybot_base::MPU9250_Acc_Gyro acc_gyro(i2c);
-  baybot_base::AK8963_Magnetometer mag(i2c);
+
+  baybot_base::I2C i2c_mag(i2c_path, mag_channel);
+  baybot_base::AK8963_Magnetometer mag(i2c_mag);
 
   acc_gyro.begin();
   mag.begin();
