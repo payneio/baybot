@@ -64,19 +64,18 @@ void MPU9250_Acc_Gyro::read(void) {
   uint8_t block_Acc[6];  // x/y/z accelerometer registers data to be stored here
   uint8_t block_Gyr[6];  // x/y/z gyroscope registers data to be stored here
 
-  if(serial_.ReadReg8(INT_STATUS) & 0x01) { // wait for magnetometer data ready bit to be set
+  if(serial_.ReadReg8(AK8963_ST1) & 0x01) { // wait for magnetometer data ready bit to be set
+    serial_.Write((uint8_t*)ACCEL_XOUT_H, 1);
+    serial_.Read(block_Acc, 6); // Read the six raw data and ST2 registers sequentially into data array
+    raw.acc_x = ((int16_t)block_Acc[1] << 8) | block_Acc[0] ;  // Turn the MSB and LSB into a signed 16-bit value
+    raw.acc_y = ((int16_t)block_Acc[3] << 8) | block_Acc[2] ;  // Data stored as little Endian
+    raw.acc_z = ((int16_t)block_Acc[5] << 8) | block_Acc[4] ;
 
-  serial_.Write((uint8_t*)ACCEL_XOUT_H, 1);
-  serial_.Read(block_Acc, 6); // Read the six raw data and ST2 registers sequentially into data array
-  raw.acc_x = ((int16_t)block_Acc[1] << 8) | block_Acc[0] ;  // Turn the MSB and LSB into a signed 16-bit value
-  raw.acc_y = ((int16_t)block_Acc[3] << 8) | block_Acc[2] ;  // Data stored as little Endian
-  raw.acc_z = ((int16_t)block_Acc[5] << 8) | block_Acc[4] ;
-
-  serial_.Write((uint8_t*)GYRO_XOUT_H, 1);
-  serial_.Read(block_Gyr, 6); // Read the six raw data and ST2 registers sequentially into data array
-  raw.gyr_x = ((int16_t)block_Gyr[1] << 8) | block_Gyr[0] ;  // Turn the MSB and LSB into a signed 16-bit value
-  raw.gyr_y = ((int16_t)block_Gyr[3] << 8) | block_Gyr[2] ;  // Data stored as little Endian
-  raw.gyr_z = ((int16_t)block_Gyr[5] << 8) | block_Gyr[4] ;
+    serial_.Write((uint8_t*)GYRO_XOUT_H, 1);
+    serial_.Read(block_Gyr, 6); // Read the six raw data and ST2 registers sequentially into data array
+    raw.gyr_x = ((int16_t)block_Gyr[1] << 8) | block_Gyr[0] ;  // Turn the MSB and LSB into a signed 16-bit value
+    raw.gyr_y = ((int16_t)block_Gyr[3] << 8) | block_Gyr[2] ;  // Data stored as little Endian
+    raw.gyr_z = ((int16_t)block_Gyr[5] << 8) | block_Gyr[4] ;
   }
 
 }
