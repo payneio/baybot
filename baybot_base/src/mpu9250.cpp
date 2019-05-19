@@ -64,7 +64,7 @@ void MPU9250_Acc_Gyro::read(void) {
   uint8_t block_Acc[6];  // x/y/z accelerometer registers data to be stored here
   uint8_t block_Gyr[6];  // x/y/z gyroscope registers data to be stored here
 
-  if(serial_.ReadReg8(AK8963_ST1) & 0x01) { // wait for magnetometer data ready bit to be set
+  if(serial_.ReadReg8(INT_STATUS) & 0x01) { // wait for accelerometer data ready bit to be set
     serial_.Write((uint8_t*)ACCEL_XOUT_H, 1);
     serial_.Read(block_Acc, 6); // Read the six raw data and ST2 registers sequentially into data array
     raw.acc_x = ((int16_t)block_Acc[1] << 8) | block_Acc[0] ;  // Turn the MSB and LSB into a signed 16-bit value
@@ -92,15 +92,14 @@ void AK8963_Magnetometer::begin(void) {
 void AK8963_Magnetometer::read(void) {
   uint8_t block[7];  // x/y/z gyro register data, ST2 register stored here, must read ST2 at end of data acquisition
   if(serial_.ReadReg8(AK8963_ST1) & 0x01) { // wait for magnetometer data ready bit to be set
-
-  serial_.Write((uint8_t*)AK8963_XOUT_L, 1);
-  serial_.Read(block, 7); // Read the six raw data and ST2 registers sequentially into data array
-  uint8_t c = block[6]; // End data read by reading ST2 register
-    if(!(c & 0x08)) { // Check if magnetic sensor overflow set, if not then report data
-    raw.x = ((int16_t)block[1] << 8) | block[0] ;  // Turn the MSB and LSB into a signed 16-bit value
-    raw.y = ((int16_t)block[3] << 8) | block[2] ;  // Data stored as little Endian
-    raw.z = ((int16_t)block[5] << 8) | block[4] ;
-   }
+    serial_.Write((uint8_t*)AK8963_XOUT_L, 1);
+    serial_.Read(block, 6); // Read the six raw data and ST2 registers sequentially into data array
+    uint8_t c = block[6]; // End data read by reading ST2 register
+        if(!(c & 0x08)) { // Check if magnetic sensor overflow set, if not then report data
+        raw.x = ((int16_t)block[1] << 8) | block[0] ;  // Turn the MSB and LSB into a signed 16-bit value
+        raw.y = ((int16_t)block[3] << 8) | block[2] ;  // Data stored as little Endian
+        raw.z = ((int16_t)block[5] << 8) | block[4] ;
+    }
   }
 }
 
