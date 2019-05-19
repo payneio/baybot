@@ -128,10 +128,12 @@ add_library(
   include/${PROJECT_NAME}/hardware.h
   include/${PROJECT_NAME}/i2c.h
   include/${PROJECT_NAME}/md25.h
+  include/${PROJECT_NAME}/mpu9250.h
   src/hardware.cpp
   src/node.cpp
   src/i2c.cpp
   src/md25.cpp
+  src/mpu9250.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -163,6 +165,17 @@ add_executable(${PROJECT_NAME}_node
 target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
 )
+
+
+add_executable(${PROJECT_NAME}_imu_node
+  src/imu_node.cpp
+  src/mpu9250.cpp
+  src/i2c.cpp
+)
+target_link_libraries(${PROJECT_NAME}_imu_node
+  ${catkin_LIBRARIES}
+)
+
 
 add_executable(${PROJECT_NAME}_verify
   src/verify.cpp
