@@ -11,6 +11,9 @@ uint8_t Mmode = 0x02;                 // 2 for 8 Hz, 6 for 100 Hz continuous
 uint8_t Gscale = GFS_2000DPS;
 uint8_t Ascale = AFS_2G;
 
+uint8_t accelReg = ACCEL_XOUT_H;
+uint8_t gyroReg = GYRO_XOUT_H;
+
 MPU9250_Acc_Gyro::MPU9250_Acc_Gyro(SerialProtocol& sp) : serial_{sp} {
     ROS_INFO("Initialized MPU9250.");
 }
@@ -65,13 +68,13 @@ void MPU9250_Acc_Gyro::read(void) {
   uint8_t block_Gyr[6];  // x/y/z gyroscope registers data to be stored here
 
   if(serial_.ReadReg8(INT_STATUS) & 0x01) { // wait for accelerometer data ready bit to be set
-    serial_.Write((uint8_t*)ACCEL_XOUT_H, 1);
+    serial_.Write(&accelReg, 1); // select read starting register
     serial_.Read(block_Acc, 6); // Read the six raw data and ST2 registers sequentially into data array
     raw.acc_x = ((int16_t)block_Acc[1] << 8) | block_Acc[0] ;  // Turn the MSB and LSB into a signed 16-bit value
     raw.acc_y = ((int16_t)block_Acc[3] << 8) | block_Acc[2] ;  // Data stored as little Endian
     raw.acc_z = ((int16_t)block_Acc[5] << 8) | block_Acc[4] ;
 
-    serial_.Write((uint8_t*)GYRO_XOUT_H, 1);
+    serial_.Write(&gyroReg, 1);
     serial_.Read(block_Gyr, 6); // Read the six raw data and ST2 registers sequentially into data array
     raw.gyr_x = ((int16_t)block_Gyr[1] << 8) | block_Gyr[0] ;  // Turn the MSB and LSB into a signed 16-bit value
     raw.gyr_y = ((int16_t)block_Gyr[3] << 8) | block_Gyr[2] ;  // Data stored as little Endian
@@ -92,7 +95,7 @@ void AK8963_Magnetometer::begin(void) {
 void AK8963_Magnetometer::read(void) {
   uint8_t block[7];  // x/y/z gyro register data, ST2 register stored here, must read ST2 at end of data acquisition
   if(serial_.ReadReg8(AK8963_ST1) & 0x01) { // wait for magnetometer data ready bit to be set
-    serial_.Write((uint8_t*)AK8963_XOUT_L, 1);
+    serial_.Write((uint8_t*)AK8963_XOUT_L, 1); // select read starting register
     serial_.Read(block, 6); // Read the six raw data and ST2 registers sequentially into data array
     uint8_t c = block[6]; // End data read by reading ST2 register
         if(!(c & 0x08)) { // Check if magnetic sensor overflow set, if not then report data

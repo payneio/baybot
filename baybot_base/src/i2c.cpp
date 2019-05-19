@@ -32,7 +32,7 @@ void I2C::Write(uint8_t data[], uint8_t size) {
   }
   if (::write(dev_fd_, data, size) != size)
     ROS_ERROR(
-      "failed to write to the bus. dev: %s, addr: %d", 
+      "failed write. dev: %s, addr: %d", 
       dev_path_.c_str(), 
       dev_addr_
     );
@@ -41,7 +41,7 @@ void I2C::Write(uint8_t data[], uint8_t size) {
 void I2C::Read(uint8_t data[], uint8_t size) {
   if (debug_) {
     ROS_ERROR(
-      "failed to write to the bus. dev: %s, addr: %d",
+      "failed read. dev: %s, addr: %d",
       dev_path_.c_str(),
       dev_addr_
     );
