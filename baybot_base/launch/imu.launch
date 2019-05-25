@@ -6,7 +6,7 @@
   <arg name="publish_tf" default="true"/>
   <arg name="publish_debug_topics" default="false"/>
 
-  <node name="imu" pkg="baybot_base_imu_node" type="baybot_base_imu_node">
+  <node name="imu" pkg="baybot_base" type="baybot_base_imu_node">
     <param name="frame_id" value="$(arg frame_id)"/>
     <param name="publish_temperature" value="$(arg publish_temperature)"/>
     <param name="rate" value="$(arg rate)"/>
