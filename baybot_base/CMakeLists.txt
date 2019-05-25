@@ -176,6 +176,13 @@ target_link_libraries(${PROJECT_NAME}_imu_node
   ${catkin_LIBRARIES}
 )
 
+add_executable(${PROJECT_NAME}_imu_node2
+  src/mpu9250_node.cpp
+)
+target_link_libraries(${PROJECT_NAME}_imu_node2
+  ${catkin_LIBRARIES} -lupm-mpu9150
+)
+
 
 add_executable(${PROJECT_NAME}_verify
   src/verify.cpp
