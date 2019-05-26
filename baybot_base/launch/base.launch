@@ -22,14 +22,16 @@
         <param name="angle_compensate"    type="bool"   value="true"/>
     </node>
 
-    <node name="imu" pkg="baybot_base" type="baybot_base_imu_node" output="screen" >
+    <!-- <node name="imu" pkg="baybot_base" type="baybot_base_imu_node" output="screen" >
         <rosparam subst_value="true">
             i2c/path: $(arg i2c_path)
             i2c/imu_channel: $(arg i2c_imu_channel)
             i2c/mag_channel: $(arg i2c_mag_channel)
             imu_hz: 20.0
         </rosparam>
-    </node>
+    </node> -->
 
+    <!-- IMU -->
+    <include file="$(find baybot_base)/launch/imu.launch" />
 
 </launch>

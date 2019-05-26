@@ -1,3 +1,13 @@
 #!/bin/bash
 
-roslaunch baybot_base base.launch i2c_path:="/dev/i2c-1" i2c_channel:=0x58 i2c_imu_channel:=0x68 i2c_mag_channel:=0x0c
+roslaunch baybot_base base.launch \
+i2c_path:="/dev/i2c-1" \
+i2c_channel:=0x58 \
+i2c_imu_channel:=0x68 \
+i2c_mag_channel:=0x0c \
+imu_with_filter:=false \
+imu_frame_id:=imu \
+imu_publish_temperature:=false \
+imu_rate:=50.0 \
+imu_publish_tf:=true \
+imu_publish_debug_topics:=false
