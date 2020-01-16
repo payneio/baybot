@@ -21,6 +21,7 @@ void ControlLoop(baybot_base::BaybotHardware &baybot,
   ros::Duration elapsed(elapsed_duration.count());
   last_time = this_time;
 
+  ROS_INFO("Updated");
   baybot.Read();
   cm.update(ros::Time::now(), elapsed);
   baybot.Write(elapsed);

@@ -8,8 +8,9 @@ Install dependencies:
 
 ```bash
 sudo apt-get update
-sudo apt-get install python-catkin-tools
-sudo apt-get install ros-melodic-ros-control ros-melodic-ros-controllers
+sudo apt-get install python-catkin-tools curl
+sudo apt-get install libusb-dev libspnav-dev libx11-dev libbluetooth-dev libcurl4-openssl-dev libcwiid-dev libbullet-dev libeigen3-dev  libyaml-cpp-dev
+curl -sSL http://get.gazebosim.org | sh
 ```
 
 ```bash
